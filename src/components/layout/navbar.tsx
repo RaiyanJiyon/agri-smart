@@ -75,7 +75,7 @@ export default function Navbar() {
               <ModeToggle />
               <LanguageToggle />
               <Button asChild variant="outline" size="sm" className="gap-2">
-                <Link href={'/sign-in'}>
+                <Link href={'/login'}>
                 <User className="h-4 w-4" />
                 <span>Sign In</span>
                 </Link>
@@ -131,7 +131,7 @@ export default function Navbar() {
                         className="w-full bg-green-600 hover:bg-green-700"
                       >
                         <Link
-                          href="/sign-in"
+                          href="/login"
                           className="flex items-center justify-center gap-2"
                         >
                           <User className="h-4 w-4" />
