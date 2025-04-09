@@ -8,10 +8,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/shared/mode-toggle";
 import { LanguageToggle } from "@/components/shared/language-toggle";
 import { Menu, Leaf, User } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Features", href: "/features" },
+  { name: "Marketplace", href: "/marketplace" },
   { name: "Dashboard", href: "/dashboard" },
   { name: "Chatbot", href: "/chatbot" },
   { name: "Community", href: "/community" },
@@ -73,9 +74,11 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-2">
               <ModeToggle />
               <LanguageToggle />
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button asChild variant="outline" size="sm" className="gap-2">
+                <Link href={'/sign-in'}>
                 <User className="h-4 w-4" />
                 <span>Sign In</span>
+                </Link>
               </Button>
             </div>
 
@@ -90,7 +93,12 @@ export default function Navbar() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                  <div className="flex flex-col h-full">
+                  <div className="flex flex-col h-full px-6">
+                    {/* Add a VisuallyHidden title */}
+                    <VisuallyHidden>
+                      <h2>Menu</h2>
+                    </VisuallyHidden>
+
                     <div className="flex items-center justify-between py-4">
                       <Link href="/" className="flex items-center gap-2">
                         <div className="bg-[hsl(var(--green-600))] text-white p-1.5 rounded-lg">
@@ -118,9 +126,17 @@ export default function Navbar() {
                     </nav>
                     <div className="mt-auto flex flex-col gap-4 py-4">
                       <LanguageToggle />
-                      <Button className="w-full bg-green-600 hover:bg-green-700">
-                        <User className="h-4 w-4 mr-2" />
-                        <span>Sign In</span>
+                      <Button
+                        asChild
+                        className="w-full bg-green-600 hover:bg-green-700"
+                      >
+                        <Link
+                          href="/sign-in"
+                          className="flex items-center justify-center gap-2"
+                        >
+                          <User className="h-4 w-4" />
+                          <span>Sign In</span>
+                        </Link>
                       </Button>
                     </div>
                   </div>
