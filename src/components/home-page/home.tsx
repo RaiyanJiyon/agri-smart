@@ -3,6 +3,7 @@ import HeroSlider from "./hero-slider";
 import WhyChooseUs from "./why-choose-us";
 import HowItWorks from "./how-works";
 import Stats from "./stats";
+import Testimonials from "./testimonials";
 
 const HomePage = () => {
   return (
@@ -15,6 +16,8 @@ const HomePage = () => {
       <HowItWorks />
       {/* Stats Section */}
       <Stats />
+      {/* Testimonials Section */}
+      <Testimonials />
     </div>
   );
 };
