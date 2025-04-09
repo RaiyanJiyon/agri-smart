@@ -12,16 +12,22 @@ const HomePage = () => {
     <div>
       {/* Hero Slider Section */}
       <HeroSlider />
+
       {/* Benefits Section */}
       <WhyChooseUs />
+
       {/* How It Works Section */}
       <HowItWorks />
+
       {/* Stats Section */}
       <Stats />
+
       {/* Testimonials Section */}
       <Testimonials />
+
       {/* Featured In Section */}
       <Featured />
+      
       {/* CTA Section */}
       <CallToAction />
     </div>
