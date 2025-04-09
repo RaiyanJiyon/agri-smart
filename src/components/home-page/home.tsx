@@ -5,6 +5,7 @@ import HowItWorks from "./how-works";
 import Stats from "./stats";
 import Testimonials from "./testimonials";
 import Featured from "./featured";
+import CallToAction from "./call-to-action";
 
 const HomePage = () => {
   return (
@@ -21,6 +22,8 @@ const HomePage = () => {
       <Testimonials />
       {/* Featured In Section */}
       <Featured />
+      {/* CTA Section */}
+      <CallToAction />
     </div>
   );
 };
