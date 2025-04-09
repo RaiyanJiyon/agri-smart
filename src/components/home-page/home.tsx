@@ -4,6 +4,7 @@ import WhyChooseUs from "./why-choose-us";
 import HowItWorks from "./how-works";
 import Stats from "./stats";
 import Testimonials from "./testimonials";
+import Featured from "./featured";
 
 const HomePage = () => {
   return (
@@ -18,6 +19,8 @@ const HomePage = () => {
       <Stats />
       {/* Testimonials Section */}
       <Testimonials />
+      {/* Featured In Section */}
+      <Featured />
     </div>
   );
 };
