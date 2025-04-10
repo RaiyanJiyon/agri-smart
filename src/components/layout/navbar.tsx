@@ -54,7 +54,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden lg:flex items-center gap-6">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -71,7 +71,7 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-2">
               <ModeToggle />
               <LanguageToggle />
               <Button asChild variant="outline" size="sm" className="gap-2">
@@ -83,7 +83,7 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu */}
-            <div className="md:hidden flex items-center gap-2">
+            <div className="lg:hidden flex items-center gap-2">
               <ModeToggle />
               <Sheet>
                 <SheetTrigger asChild>
