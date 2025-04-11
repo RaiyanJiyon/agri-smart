@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ForumPost from "@/components/community-page/forum-post";
-import TopContributors from "@/components/community-page/top-contributors";
-import PopularTopics from "@/components/community-page/popular-topics";
+import ForumPost from "@/app/community/components/forum-post";
+import TopContributors from "@/app/community/components/top-contributors";
+import PopularTopics from "./components/popular-topics";
 
 export default function CommunityPage() {
   return (
