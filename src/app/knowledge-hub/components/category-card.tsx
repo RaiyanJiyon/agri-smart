@@ -3,7 +3,6 @@
 import type { CategoryInfo } from "../data"
 import { Card, CardContent } from "@/components/ui/card"
 import { Sprout, Beef, Mountain, Bug, Droplets, Leaf, Cpu, BarChart, Cloud, Tractor } from "lucide-react"
-import Link from "next/link"
 import { motion } from "framer-motion"
 import { JSX } from "react"
 
@@ -12,7 +11,7 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
-  const { id, name, description, icon, color } = category
+  const { name, description, icon, color } = category
 
   const getIcon = (): JSX.Element => {
     const props = { className: `h-6 w-6 text-${color}-600` }
@@ -45,7 +44,6 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
-      <Link href={`/knowledge-hub/category/${id}`}>
         <Card
           className={`h-full border-${color}-100 dark:border-${color}-900/30 hover:border-${color}-200 dark:hover:border-${color}-800 transition-colors`}
         >
@@ -55,7 +53,6 @@ export function CategoryCard({ category }: CategoryCardProps) {
             <p className="text-muted-foreground text-sm">{description}</p>
           </CardContent>
         </Card>
-      </Link>
     </motion.div>
   )
 }

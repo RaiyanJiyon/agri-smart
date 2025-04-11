@@ -20,7 +20,6 @@ export function FeaturedResource({ resource }: FeaturedResourceProps) {
     datePublished,
     readTime,
     tags,
-    url,
     previewContent,
   } = resource;
 
@@ -82,7 +81,7 @@ export function FeaturedResource({ resource }: FeaturedResourceProps) {
           </div>
         )}
         <Button asChild className="w-fit bg-green-600 hover:bg-green-700">
-          <Link href={url}>
+          <Link href={`knowledge-hub/${resource.id}`}>
             Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>

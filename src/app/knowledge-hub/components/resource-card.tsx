@@ -23,6 +23,7 @@ interface ResourceCardProps {
 
 export function ResourceCard({ resource }: ResourceCardProps) {
   const {
+    id,
     title,
     description,
     type,
@@ -63,7 +64,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
-      <Link href={resource.url}>
+      <Link href={`/knowledge-hub/${id}`}>
         <Card className="h-full p-0 overflow-hidden hover:border-green-200 dark:hover:border-green-800 transition-colors">
           <div className="relative h-48 overflow-hidden">
             <Image
