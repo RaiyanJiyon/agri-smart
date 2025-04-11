@@ -1,7 +1,8 @@
-import About from "@/components/about-page/about"
-import OurTeam from "@/components/about-page/our-team"
-import OurPartners from "@/components/about-page/our-partners"
-import ContactUs from "@/components/about-page/contact-us"
+import About from "./components/about";
+import ContactUs from "./components/contact-us";
+import OurPartners from "./components/our-partners";
+import OurTeam from "./components/our-team";
+
 
 export default function AboutPage() {
   return (

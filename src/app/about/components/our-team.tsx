@@ -5,8 +5,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+} from "../../../components/ui/card";
+import { Avatar, AvatarFallback } from "../../../components/ui/avatar";
 import Image from "next/image";
 
 const OurTeam = () => {
