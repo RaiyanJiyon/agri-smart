@@ -1,4 +1,13 @@
+import Image from "next/image";
 import React from "react";
+
+const partnerImages = [
+  "https://i.ibb.co.com/8g4Vbrn2/client1.webp",
+  "https://i.ibb.co.com/KcgvFjbB/client2.webp",
+  "https://i.ibb.co.com/CpvkdX3p/client3.webp",
+  "https://i.ibb.co.com/wVM1Pvj/client-7.png",
+  "https://i.ibb.co.com/8LGbz6pF/partner-8.png",
+];
 
 const Featured = () => {
   return (
@@ -11,15 +20,16 @@ const Featured = () => {
         </div>
 
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <div
-              key={item}
-              className="grayscale hover:grayscale-0 transition-all duration-300"
-            >
+          {partnerImages.map((partner) => (
+            <div key={partner} className="transition-all duration-300">
               <div className="h-12 w-32 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
-                <span className="text-gray-500 dark:text-gray-400 text-sm">
-                  Media Logo
-                </span>
+                <Image
+                  src={partner}
+                  alt="partner image"
+                  width={50}
+                  height={50}
+                  className="w-fit"
+                />
               </div>
             </div>
           ))}
