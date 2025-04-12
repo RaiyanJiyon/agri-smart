@@ -31,3 +31,29 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  _: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    await connectToDB();
+
+    const deletedProduct = await Product.findByIdAndDelete(params.id);
+
+    if (!deletedProduct) {
+      return NextResponse.json(
+        { message: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("DELETE error:", error);
+    return NextResponse.json(
+      { message: "Failed to delete product" },
+      { status: 500 }
+    );
+  }
+}
