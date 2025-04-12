@@ -75,7 +75,7 @@ export default function ChatbotPage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "deepseek/deepseek-r1:free",
+            model: "google/gemini-2.5-pro-exp-03-25:free",
             messages: [
               {
                 role: "system",

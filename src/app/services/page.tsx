@@ -8,9 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Droplets } from "lucide-react";
-import WeatherWidget from "@/app/dashboard/components/weather-widget";
-import FarmMetricsChart from "@/app/dashboard/components/farm-metrics-chart";
-import Alert from "@/app/dashboard/components/alert";
 import { useEffect, useState } from "react";
 import {
   fetchCurrentWeather,
@@ -22,6 +19,9 @@ import Loading from "../loading";
 import RecentActivity from "./components/recent-activity";
 import TaskScheduler from "./components/task-scheduler";
 import AgricultureInsightsTabs from "./components/agriculture-insights-tabs";
+import Alert from "./components/alert";
+import WeatherWidget from "./components/weather-widget";
+import FarmMetricsChart from "./components/farm-metrics-chart";
 
 export default function DashboardPage() {
   const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
