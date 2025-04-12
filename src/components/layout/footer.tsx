@@ -69,7 +69,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {[
                 "Home",
-                "Features",
+                "Marketplace",
                 "Dashboard",
                 "Chatbot",
                 "Community",

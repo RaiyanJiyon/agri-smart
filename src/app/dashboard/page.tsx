@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -8,13 +10,69 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BarChart, Upload, Droplets } from "lucide-react";
-import WeatherWidget from "@/components/dashboard-page/farmer/weather-widget";
-import CropRecommendationForm from "@/components/dashboard-page/farmer/crop-recommendation-form";
-import FarmMetricsChart from "@/components/dashboard-page/farmer/farm-metrics-chart";
-import DiseaseDetectionUpload from "@/components/dashboard-page/farmer/disease-detection-upload";
-import Alert from "@/components/dashboard-page/farmer/alert";
+import WeatherWidget from "@/app/dashboard/components/weather-widget";
+import CropRecommendationForm from "@/app/dashboard/components/crop-recommendation-form";
+import FarmMetricsChart from "@/app/dashboard/components/farm-metrics-chart";
+import DiseaseDetectionUpload from "@/app/dashboard/components/disease-detection-upload";
+import Alert from "@/app/dashboard/components/alert";
+import { useEffect, useState } from "react";
+import {
+  fetchCurrentWeather,
+  fetchForecast,
+} from "@/lib/services/weatherService";
+import { CurrentWeather, ProcessedForecast } from "@/lib/types";
+import { processForecastData } from "@/lib/utils/weatherUtils";
+import Loading from "../loading";
 
 export default function DashboardPage() {
+  const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
+  const [forecastData, setForecastData] = useState<ProcessedForecast[]>([]);
+  const [setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const city = "Cherrapunji";
+
+      try {
+        // Fetch current weather
+        const currentWeather = await fetchCurrentWeather(city);
+        setWeatherData(currentWeather);
+
+        // Fetch forecast
+        const forecast = await fetchForecast(city);
+        const processedForecast = processForecastData(forecast.list);
+        setForecastData(processedForecast);
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
+    fetchData();
+    const intervalId = setInterval(fetchData, 60000); // Fetch every 60 seconds
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, [setError]);
+
+  // Function to determine if an alert should be shown
+  const getAlert = (): { title: string; description: string } | null => {
+    if (!forecastData.length) return null;
+
+    const hasHeavyRainfall = forecastData.some(
+      (day) => day.description.toLowerCase().includes("rain") && day.temp < 20
+    );
+
+    if (hasHeavyRainfall) {
+      return {
+        title: "Weather Alert",
+        description:
+          "Heavy rainfall expected in your region over the next 48 hours. Consider adjusting your irrigation schedule.",
+      };
+    }
+
+    return null;
+  };
+
+  const alert = getAlert();
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -42,11 +100,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Alert Section */}
-      <Alert />
+      {alert && <Alert title={alert.title} description={alert.description} />}
 
       {/* Weather Widget */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <WeatherWidget />
+        {weatherData && forecastData.length ? (
+          <WeatherWidget
+            weatherData={weatherData}
+            forecastData={forecastData}
+          />
+        ) : (
+          <Loading />
+        )}
 
         <Card className="md:col-span-2">
           <CardHeader>
