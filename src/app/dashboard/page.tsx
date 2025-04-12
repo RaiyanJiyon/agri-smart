@@ -23,6 +23,8 @@ import {
 import { CurrentWeather, ProcessedForecast } from "@/lib/types";
 import { processForecastData } from "@/lib/utils/weatherUtils";
 import Loading from "../loading";
+import RecentActivity from "./components/recent-activity";
+import TaskScheduler from "./components/task-scheduler";
 
 export default function DashboardPage() {
   const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
@@ -162,94 +164,11 @@ export default function DashboardPage() {
       </Tabs>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-green-700 dark:text-green-500">
-              Recent Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                {
-                  date: "Today, 10:23 AM",
-                  action: "Disease scan completed for Tomato field",
-                },
-                {
-                  date: "Yesterday, 4:12 PM",
-                  action: "Irrigation schedule updated",
-                },
-                {
-                  date: "Apr 7, 9:45 AM",
-                  action: "New crop recommendation generated",
-                },
-                {
-                  date: "Apr 5, 2:30 PM",
-                  action: "Weather alert: Frost warning",
-                },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className="flex justify-between pb-2 border-b border-gray-100 dark:border-gray-800"
-                >
-                  <span className="text-gray-600 dark:text-gray-400 text-sm">
-                    {item.date}
-                  </span>
-                  <span>{item.action}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Recent Activity */}
+        <RecentActivity />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-green-700 dark:text-green-500">
-              Task Scheduler
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                {
-                  date: "Today",
-                  task: "Apply fertilizer to corn field",
-                  status: "Pending",
-                },
-                {
-                  date: "Tomorrow",
-                  task: "Check irrigation system",
-                  status: "Scheduled",
-                },
-                {
-                  date: "Apr 10",
-                  task: "Harvest tomatoes",
-                  status: "Scheduled",
-                },
-                {
-                  date: "Apr 12",
-                  task: "Soil testing for wheat field",
-                  status: "Scheduled",
-                },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-gray-800"
-                >
-                  <div>
-                    <div className="font-medium">{item.task}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {item.date}
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    {item.status}
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Task Scheduler */}
+        <TaskScheduler />
       </div>
     </div>
   );
