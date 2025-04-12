@@ -3,17 +3,13 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { BarChart, Upload, Droplets } from "lucide-react";
+import { Upload, Droplets } from "lucide-react";
 import WeatherWidget from "@/app/dashboard/components/weather-widget";
-import CropRecommendationForm from "@/app/dashboard/components/crop-recommendation-form";
 import FarmMetricsChart from "@/app/dashboard/components/farm-metrics-chart";
-import DiseaseDetectionUpload from "@/app/dashboard/components/disease-detection-upload";
 import Alert from "@/app/dashboard/components/alert";
 import { useEffect, useState } from "react";
 import {
@@ -25,15 +21,15 @@ import { processForecastData } from "@/lib/utils/weatherUtils";
 import Loading from "../loading";
 import RecentActivity from "./components/recent-activity";
 import TaskScheduler from "./components/task-scheduler";
+import AgricultureInsightsTabs from "./components/agriculture-insights-tabs";
 
 export default function DashboardPage() {
   const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
   const [forecastData, setForecastData] = useState<ProcessedForecast[]>([]);
-  const [setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const city = "Cherrapunji";
+      const city = "Sylhet";
 
       try {
         // Fetch current weather
@@ -44,15 +40,15 @@ export default function DashboardPage() {
         const forecast = await fetchForecast(city);
         const processedForecast = processForecastData(forecast.list);
         setForecastData(processedForecast);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (error) {
+        console.error(error);
       }
     };
 
     fetchData();
     const intervalId = setInterval(fetchData, 60000); // Fetch every 60 seconds
     return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, [setError]);
+  }, []);
 
   // Function to determine if an alert should be shown
   const getAlert = (): { title: string; description: string } | null => {
@@ -104,7 +100,7 @@ export default function DashboardPage() {
       {/* Alert Section */}
       {alert && <Alert title={alert.title} description={alert.description} />}
 
-      {/* Weather Widget */}
+      {/* Weather Widget Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {weatherData && forecastData.length ? (
           <WeatherWidget
@@ -115,6 +111,7 @@ export default function DashboardPage() {
           <Loading />
         )}
 
+        {/* Crop Health Index Section */}
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle className="text-green-700 dark:text-green-500">
@@ -127,41 +124,8 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <Tabs defaultValue="crops" className="w-full mb-8">
-        <TabsList className="grid grid-cols-3 mb-8">
-          <TabsTrigger value="crops">Crop Planning</TabsTrigger>
-          <TabsTrigger value="disease">Disease Detection</TabsTrigger>
-          <TabsTrigger value="market">Market Insights</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="crops">
-          <CropRecommendationForm />
-        </TabsContent>
-
-        <TabsContent value="disease">
-          <DiseaseDetectionUpload />
-        </TabsContent>
-
-        <TabsContent value="market">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-green-700 dark:text-green-500">
-                Market Price Forecast
-              </CardTitle>
-              <CardDescription>
-                Predicted prices for the next 3 months based on historical data
-                and market trends
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[300px]">
-              <div className="h-full flex items-center justify-center text-gray-500">
-                <BarChart className="h-16 w-16 opacity-50" />
-                <p className="ml-4">Market price chart will appear here</p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {/* Agriculture Insights Tabs Section */}
+      <AgricultureInsightsTabs />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Recent Activity */}
