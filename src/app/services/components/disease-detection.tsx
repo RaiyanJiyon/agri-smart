@@ -24,7 +24,7 @@ type DetectionResult = {
   prevention: string[];
 } | null;
 
-export default function DiseaseDetectionUpload() {
+export default function DiseaseDetection() {
   const [uploadState, setUploadState] = useState<UploadState>("idle");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [result, setResult] = useState<DetectionResult>(null);

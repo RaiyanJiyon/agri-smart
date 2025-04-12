@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Leaf, Droplets, ThermometerSun, Loader2 } from "lucide-react"
 
-export default function CropRecommendationForm() {
+export default function CropPlanning() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<string | null>(null)
 
