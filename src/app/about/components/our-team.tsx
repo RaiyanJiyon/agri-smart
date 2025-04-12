@@ -21,7 +21,7 @@ const OurTeam = () => {
           {
             name: "Dr. Emily Chen",
             role: "Founder & CEO",
-            image: "https://i.ibb.co.com/Q3whbd9q/doctor3.jpg",
+            image: "https://i.ibb.co.com/3YBHKxy9/profile-picture.jpg",
             bio: "Agricultural scientist with 15 years of experience in sustainable farming systems.",
           },
           {

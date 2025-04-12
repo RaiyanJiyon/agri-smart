@@ -1,6 +1,6 @@
 import { connectToDB } from "@/lib/mongoose/connect";
 import { Product } from "@/models/product.model";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -13,5 +13,22 @@ export async function GET() {
       { error: "Failed to fetch products" },
       { status: 500 }
     );
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    await connectToDB();
+    const data = await req.json();
+
+    const newProduct = await Product.create({
+      ...data,
+      dateAdded: new Date(),
+    });
+
+    return NextResponse.json(newProduct, { status: 201 });
+  } catch (error) {
+    console.error("POST error:", error);
+    return NextResponse.json({ message: "Failed to create product" }, { status: 500 });
   }
 }
