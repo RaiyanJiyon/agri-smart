@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-
-// Importing UI components from your custom UI library
 import {
   Card,
   CardContent,
@@ -13,7 +11,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Upload, ImageIcon, Loader2, AlertTriangle, Check } from "lucide-react";
+import {
+  Upload,
+  ImageIcon,
+  Loader2,
+  AlertTriangle,
+  Check,
+} from "lucide-react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 type UploadState = "idle" | "uploading" | "success" | "error";
 type DetectionResult = {
@@ -30,101 +35,84 @@ export default function DiseaseDetection() {
   const [result, setResult] = useState<DetectionResult>(null);
   const [file, setFile] = useState<File | null>(null);
 
-  // Handle file change: creates preview url and resets state.
+  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
 
     setFile(selectedFile);
-    // Create a preview of the uploaded image
     const url = URL.createObjectURL(selectedFile);
     setPreviewUrl(url);
     setUploadState("idle");
     setResult(null);
   };
 
-  // Function that sends the base64 image to the API endpoint,
-  // extracts the JSON from the response and updates the component state.
-  const analyzeImageWithDeepSeek = async (imageBase64: string) => {
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result?.toString().split(",")[1];
+        if (base64String) resolve(base64String);
+        else reject("Failed to convert file to base64.");
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const analyzeImageWithGemini = async (imageBase64: string) => {
     setUploadState("uploading");
     setResult(null);
 
     try {
-      const response = await fetch(
-        "https://openrouter.ai/api/v1/chat/completions",
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro"  });
+
+      const result = await model.generateContent([
         {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
-            "HTTP-Referer": window.location.href,
-            "X-Title": "AgriSmart Disease Detection",
-            "Content-Type": "application/json",
+          inlineData: {
+            mimeType: "image/jpeg",
+            data: imageBase64,
           },
-          body: JSON.stringify({
-            model: "google/gemini-2.5-pro-exp-03-25:free",
-            messages: [
-              {
-                role: "system",
-                content: `You are an agricultural expert AI specialized in plant disease detection. 
-                Analyze the provided plant image and respond with:
-                1. Disease name (most likely)
-                2. Confidence percentage (estimate)
-                3. Detailed description of symptoms
-                4. Recommended treatment plan
-                5. Prevention tips (as bullet points)
+        },
+        {
+          text: `You are an agricultural expert AI specialized in plant disease detection.
+Respond ONLY with JSON containing the following fields:
+{
+  "disease": "Name of disease",
+  "confidence": 92.5,
+  "description": "Detailed description...",
+  "treatment": "Treatment advice...",
+  "prevention": ["Tip 1", "Tip 2", "Tip 3"]
+}`,
+        },
+      ]);
 
-                Format your response as JSON:
-                {
-                "disease": "Disease Name",
-                "confidence": 85.5,
-                "description": "Detailed description...",
-                "treatment": "Recommended treatments...",
-                "prevention": ["Tip 1", "Tip 2", "Tip 3"]
-                }
-                Respond ONLY with valid JSON.`,
-              },
-              {
-                role: "user",
-                content: `Analyze this plant image for diseases: ${imageBase64}`,
-              },
-            ],
-          }),
-        }
-      );
+      const content = await result.response.text();
 
-      const data = await response.json();
-      const content = data.choices?.[0]?.message?.content;
-      // Extract JSON block from the response content
+      // Extract JSON
       const jsonStart = content.indexOf("{");
       const jsonEnd = content.lastIndexOf("}") + 1;
       const jsonString = content.slice(jsonStart, jsonEnd);
-
       const analysisResult = JSON.parse(jsonString);
 
-      setResult({
-        disease: analysisResult.disease,
-        confidence: analysisResult.confidence,
-        description: analysisResult.description,
-        treatment: analysisResult.treatment,
-        prevention: analysisResult.prevention,
-      });
+      setResult(analysisResult);
       setUploadState("success");
-    } catch (error) {
-      console.error("Analysis error:", error);
+    } catch (err) {
+      console.error("Error analyzing image:", err);
       setUploadState("error");
     }
   };
 
-  // Read file and pass base64 representation to the analysis function.
   const handleUpload = async () => {
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64String = event.target?.result?.toString().split(",")[1] || "";
-      analyzeImageWithDeepSeek(base64String);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const base64String = await fileToBase64(file);
+      analyzeImageWithGemini(base64String);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setUploadState("error");
+    }
   };
 
   return (
@@ -155,9 +143,7 @@ export default function DiseaseDetection() {
             ) : (
               <div className="flex flex-col items-center justify-center text-gray-500">
                 <ImageIcon className="h-16 w-16 mb-4 opacity-20" />
-                <p className="mb-2">
-                  Upload a clear image of the affected plant
-                </p>
+                <p className="mb-2">Upload a clear image of the affected plant</p>
                 <p className="text-xs text-gray-400">
                   Supported formats: JPG, PNG
                 </p>
