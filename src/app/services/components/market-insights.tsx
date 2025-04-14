@@ -23,6 +23,18 @@ import {
 import { TrendingUp, TrendingDown, Info } from "lucide-react";
 import { useState } from "react";
 
+interface TooltipProps {
+  active?: boolean;
+  payload?: {
+    value: number;
+    payload: {
+      forecast: boolean;
+    };
+  }[];
+  label?: string;
+}
+
+
 // Mock data for market prices
 const marketData = {
   wheat: [
@@ -114,7 +126,7 @@ const MarketInsights = () => {
   );
 
   // Custom tooltip for the chart
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
     if (active && payload && payload.length) {
       const isForecast = payload[0].payload.forecast;
       return (

@@ -14,15 +14,13 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Send, Mic, ImageIcon, Bot, User } from "lucide-react";
-import { marked } from "marked";
-import DOMPurify from "dompurify";
+import ReactMarkdown from "react-markdown";
 
 type Message = {
   id: string;
   content: string;
   sender: "user" | "bot";
   timestamp: Date;
-  isHtml?: boolean;
 };
 
 export default function ChatbotPage() {
@@ -33,29 +31,20 @@ export default function ChatbotPage() {
         "Hello! I'm your AgriSmart AI assistant. I specialize in agriculture, farming techniques, crop management, and livestock. How can I help with your farming questions today?",
       sender: "bot",
       timestamp: new Date(),
-      isHtml: true,
     },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [language, setLanguage] = useState("english");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Configure marked to use line breaks
-  marked.setOptions({
-    breaks: true,
-    gfm: true,
-  });
-
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
       sender: "user",
       timestamp: new Date(),
-      isHtml: false,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -63,46 +52,40 @@ export default function ChatbotPage() {
     setIsLoading(true);
 
     try {
-      // Call the DeepSeek R1 API
       const response = await fetch(
-        "https://openrouter.ai/api/v1/chat/completions",
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
-            "HTTP-Referer": window.location.href,
-            "X-Title": "AgriSmart AI Assistant",
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "google/gemini-2.5-pro-exp-03-25:free",
-            messages: [
+            contents: [
               {
-                role: "system",
-                content: `You are an agricultural expert assistant specialized in farming techniques, crop management, livestock, and agricultural technology. 
-                Respond only to agriculture-related questions in ${language}. For non-agriculture questions, politely explain that you specialize in farming topics.
-                Provide accurate, practical advice based on scientific farming practices. Use markdown formatting for better readability (headings, lists, bold text).`,
+                role: "user",
+                parts: [
+                  {
+                    text: `You are an agricultural expert assistant specialized in farming techniques, crop management, livestock, and agricultural technology. Respond only to agriculture-related questions in ${language}. For non-agriculture questions, politely explain that you specialize in farming topics. Provide accurate, practical advice based on scientific farming practices. Use markdown formatting for better readability (headings, lists, bold text). \n\n ${inputValue}`,
+                  },
+                ],
               },
-              { role: "user", content: inputValue },
             ],
           }),
         }
       );
 
       const data = await response.json();
-      const markdownResponse =
-        data.choices?.[0]?.message?.content ||
-        "I couldn't generate a response. Please try again with a farming-related question.";
+      console.log(data);
 
-      // Convert markdown to HTML and sanitize it
-      const htmlResponse = DOMPurify.sanitize(marked.parse(markdownResponse));
+      const markdownResponse =
+        data.candidates?.[0]?.content?.parts?.[0]?.text ??
+        "I couldn't generate a response. Please try again.";
 
       const botMessage: Message = {
         id: Date.now().toString(),
-        content: htmlResponse,
+        content: markdownResponse,
         sender: "bot",
         timestamp: new Date(),
-        isHtml: true,
       };
 
       setMessages((prev) => [...prev, botMessage]);
@@ -112,10 +95,9 @@ export default function ChatbotPage() {
         content: "Sorry, I encountered an error. Please try again later.",
         sender: "bot",
         timestamp: new Date(),
-        isHtml: false,
       };
       setMessages((prev) => [...prev, errorMessage]);
-      console.error("API Error:", error);
+      console.error("Gemini API Error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -131,6 +113,7 @@ export default function ChatbotPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
+        {/* Header and Language Selector */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-green-700 dark:text-green-500">
@@ -152,6 +135,7 @@ export default function ChatbotPage() {
           </Select>
         </div>
 
+        {/* Chat Display */}
         <Card className="border-2 border-green-100 dark:border-green-900/30 mb-4">
           <CardContent className="p-0">
             <ScrollArea className="h-[60vh] p-4">
@@ -192,16 +176,9 @@ export default function ChatbotPage() {
                             : "bg-gray-100 dark:bg-gray-800"
                         }`}
                       >
-                        {message.isHtml ? (
-                          <div
-                            className="prose prose-sm dark:prose-invert max-w-none"
-                            dangerouslySetInnerHTML={{
-                              __html: message.content,
-                            }}
-                          />
-                        ) : (
-                          <p>{message.content}</p>
-                        )}
+                        <div className="prose prose-sm dark:prose-invert max-w-none">
+                          <ReactMarkdown>{message.content}</ReactMarkdown>
+                        </div>
                         <p
                           className={`text-xs mt-1 ${
                             message.sender === "user"
@@ -218,6 +195,7 @@ export default function ChatbotPage() {
                     </div>
                   </div>
                 ))}
+                {/* Typing indicator */}
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="flex items-start gap-2 max-w-[80%]">
@@ -241,6 +219,7 @@ export default function ChatbotPage() {
           </CardContent>
         </Card>
 
+        {/* Input Area */}
         <div className="flex gap-2">
           <Button variant="outline" size="icon">
             <ImageIcon className="h-5 w-5" />
@@ -268,6 +247,7 @@ export default function ChatbotPage() {
           </div>
         </div>
 
+        {/* Suggested Prompts */}
         <div className="mt-6">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Suggested farming questions:

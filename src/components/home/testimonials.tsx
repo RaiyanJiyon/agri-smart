@@ -53,7 +53,7 @@ const Testimonials = () => {
           {testimonials.map(({ quote, name, role, avatar, rating }, index) => (
             <div
               key={index}
-              className="border-2 border-[hsl(var(--green-100))] dark:border-[hsl(var(--green-900))]/30 shadow-md bg-white rounded-xl"
+              className="border-2 border-[hsl(var(--green-100))] dark:border-[hsl(var(--green-900))]/30 shadow-md bg-white dark:bg-gray-400 rounded-xl"
             >
               <div className="pt-6 px-6">
                 {/* Rating Stars */}
@@ -72,7 +72,7 @@ const Testimonials = () => {
                   ))}
                 </div>
                 {/* Quote */}
-                <p className="text-gray-600 dark:text-gray-300 mb-6 italic">
+                <p className="text-gray-600 dark:text-white mb-6 italic">
                   &quot;{quote}&quot;
                 </p>
                 {/* Author Info */}
@@ -84,7 +84,7 @@ const Testimonials = () => {
                   </Avatar>
                   <div>
                     <p className="font-medium">{name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-gray-500 dark:text-white">
                       {role}
                     </p>
                   </div>
