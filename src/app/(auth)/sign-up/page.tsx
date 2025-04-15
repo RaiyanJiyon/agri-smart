@@ -26,7 +26,14 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useState } from "react";
 
 // Define the form schema using Zod with optional fields
@@ -34,11 +41,14 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  phone: z.string().min(10, {
-    message: "Phone number must be at least 10 digits.",
-  }).max(15, {
-    message: "Phone number must be at most 15 digits.",
-  }),
+  phone: z
+    .string()
+    .min(10, {
+      message: "Phone number must be at least 10 digits.",
+    })
+    .max(15, {
+      message: "Phone number must be at most 15 digits.",
+    }),
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
@@ -80,20 +90,30 @@ export default function SignUpPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       console.log(values);
-      
-      // Mock API call - in real app, this would be registration API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {"Content-type": 'application/json'},
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+
       toast("Registration Successful", {
         description: "Welcome to AgriSmart! Your account has been created.",
       });
-      
-      // Navigate to dashboard
-      router.push("/dashboard");
+
+      // Navigate to login
+      router.push("/login");
     } catch (error) {
       console.error(error);
       toast("Registration Failed", {
-        description: "An error occurred while creating your account. Please try again.",
+        description:
+          "An error occurred while creating your account. Please try again.",
       });
     }
   }
@@ -122,17 +142,23 @@ export default function SignUpPage() {
           <CardHeader>
             <CardTitle>Register</CardTitle>
             <CardDescription>
-              Enter your details to create an account (location and farm information are optional)
+              Enter your details to create an account (location and farm
+              information are optional)
             </CardDescription>
           </CardHeader>
 
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Personal Information Section */}
                   <div className="space-y-4 md:col-span-2">
-                    <h3 className="font-medium text-lg">Personal Information</h3>
+                    <h3 className="font-medium text-lg">
+                      Personal Information
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
@@ -169,7 +195,10 @@ export default function SignUpPage() {
                           <FormItem className="space-y-2">
                             <FormLabel>Email Address*</FormLabel>
                             <FormControl>
-                              <Input placeholder="Your email address" {...field} />
+                              <Input
+                                placeholder="Your email address"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -213,7 +242,9 @@ export default function SignUpPage() {
 
                   {/* Location Information Section */}
                   <div className="space-y-4 md:col-span-2">
-                    <h3 className="font-medium text-lg">Location Information (Optional)</h3>
+                    <h3 className="font-medium text-lg">
+                      Location Information (Optional)
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
@@ -222,7 +253,10 @@ export default function SignUpPage() {
                           <FormItem className="space-y-2">
                             <FormLabel>Village/Town</FormLabel>
                             <FormControl>
-                              <Input placeholder="Your village or town" {...field} />
+                              <Input
+                                placeholder="Your village or town"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -249,7 +283,10 @@ export default function SignUpPage() {
                         render={({ field }) => (
                           <FormItem className="space-y-2">
                             <FormLabel>State</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select state" />
@@ -257,11 +294,17 @@ export default function SignUpPage() {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="barisal">Barisal</SelectItem>
-                                <SelectItem value="chittagong">Chittagong</SelectItem>
+                                <SelectItem value="chittagong">
+                                  Chittagong
+                                </SelectItem>
                                 <SelectItem value="dhaka">Dhaka</SelectItem>
                                 <SelectItem value="khulna">Khulna</SelectItem>
-                                <SelectItem value="mymensingh">Mymensingh</SelectItem>
-                                <SelectItem value="rajshahi">Rajshahi</SelectItem>
+                                <SelectItem value="mymensingh">
+                                  Mymensingh
+                                </SelectItem>
+                                <SelectItem value="rajshahi">
+                                  Rajshahi
+                                </SelectItem>
                                 <SelectItem value="rangpur">Rangpur</SelectItem>
                                 <SelectItem value="sylhet">Sylhet</SelectItem>
                               </SelectContent>
@@ -275,7 +318,9 @@ export default function SignUpPage() {
 
                   {/* Farm Information Section */}
                   <div className="space-y-4 md:col-span-2">
-                    <h3 className="font-medium text-lg">Farm Information (Optional)</h3>
+                    <h3 className="font-medium text-lg">
+                      Farm Information (Optional)
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
@@ -283,7 +328,10 @@ export default function SignUpPage() {
                         render={({ field }) => (
                           <FormItem className="space-y-2">
                             <FormLabel>Primary Crop</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select main crop" />
@@ -294,9 +342,13 @@ export default function SignUpPage() {
                                 <SelectItem value="rice">Rice</SelectItem>
                                 <SelectItem value="corn">Corn/Maize</SelectItem>
                                 <SelectItem value="cotton">Cotton</SelectItem>
-                                <SelectItem value="sugarcane">Sugarcane</SelectItem>
+                                <SelectItem value="sugarcane">
+                                  Sugarcane
+                                </SelectItem>
                                 <SelectItem value="pulses">Pulses</SelectItem>
-                                <SelectItem value="vegetables">Vegetables</SelectItem>
+                                <SelectItem value="vegetables">
+                                  Vegetables
+                                </SelectItem>
                                 <SelectItem value="fruits">Fruits</SelectItem>
                                 <SelectItem value="other">Other</SelectItem>
                               </SelectContent>
@@ -320,7 +372,13 @@ export default function SignUpPage() {
                                 placeholder="Size of your farm"
                                 {...field}
                                 value={field.value || ""}
-                                onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                                onChange={(e) =>
+                                  field.onChange(
+                                    e.target.value === ""
+                                      ? undefined
+                                      : Number(e.target.value)
+                                  )
+                                }
                               />
                             </FormControl>
                             <FormMessage />
@@ -358,14 +416,19 @@ export default function SignUpPage() {
                               className="text-primary hover:underline"
                             >
                               Privacy Policy
-                            </Link>*
+                            </Link>
+                            *
                           </FormLabel>
                         </div>
                       </FormItem>
                     )}
                   />
 
-                  <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={form.formState.isSubmitting}
+                  >
                     {form.formState.isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -14,12 +14,20 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useState } from "react";
 
 // Define the form schema using Zod
@@ -30,11 +38,13 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
   }),
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean().default(false).optional(),
 });
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/dashboard";
   const [showPassword, setShowPassword] = useState(false);
 
   // Define the form
@@ -50,21 +60,32 @@ export default function LoginPage() {
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log(values);
-      // Mock API call - in real app, this would be my login API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast("Login Successful", {
+      const response = await signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+        callbackUrl: redirectPath
+      });
+
+      if (response?.error) {
+        toast.error("Login Failed", {
+          description: response.error === "CredentialsSignin" 
+            ? "Invalid email or password" 
+            : response.error,
+        });
+        return;
+      }
+
+      toast.success("Login Successful", {
         description: "Welcome back to AgriSmart!",
       });
-      
-      // Navigate to dashboard
-      router.push("/dashboard");
+
+      // Navigate to the callback URL or default path
+      router.push(response?.url || "/services");
     } catch (error) {
-      console.log(error);
-      
-      toast("Login Failed", {
-        description: "Invalid email or password. Please try again.",
+      console.error("Login error:", error);
+      toast.error("Login Failed", {
+        description: "An unexpected error occurred. Please try again.",
       });
     }
   }
@@ -97,7 +118,10 @@ export default function LoginPage() {
 
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="email"
@@ -175,7 +199,11 @@ export default function LoginPage() {
                   )}
                 />
 
-                <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
+                >
                   {form.formState.isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
