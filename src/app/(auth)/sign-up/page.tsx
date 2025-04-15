@@ -1,12 +1,9 @@
 "use client";
 
-import type React from "react";
-import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2, UserPlus, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -26,68 +23,80 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useState } from "react";
+
+// Define the form schema using Zod with optional fields
+const formSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  phone: z.string().min(10, {
+    message: "Phone number must be at least 10 digits.",
+  }).max(15, {
+    message: "Phone number must be at most 15 digits.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters.",
+  }),
+  village: z.string().optional(),
+  district: z.string().optional(),
+  state: z.string().optional(),
+  primaryCrop: z.string().optional(),
+  landSize: z.coerce.number().optional(),
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions.",
+  }),
+});
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Form state
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [village, setVillage] = useState("");
-  const [district, setDistrict] = useState("");
-  const [state, setState] = useState("");
-  const [primaryCrop, setPrimaryCrop] = useState("");
-  const [landSize, setLandSize] = useState("");
-  const [acceptTerms, setAcceptTerms] = useState(false);
+  // Define the form
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      phone: "",
+      email: "",
+      password: "",
+      village: "",
+      district: "",
+      state: "",
+      primaryCrop: "",
+      landSize: undefined,
+      acceptTerms: false,
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Basic validation
-    if (
-      !name ||
-      !phone ||
-      !password ||
-      !email ||
-      !village ||
-      !district ||
-      !state ||
-      !primaryCrop ||
-      !landSize
-    ) {
-      toast("Incomplete Information", {
-        description: "Please fill all the required fields",
-      });
-      return;
-    }
-
-    if (!acceptTerms) {
-      toast("Terms Required", {
-        description: "Please accept the terms and conditions to continue",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Mock API call - in real app, this would be your registration API
-    setTimeout(() => {
-      setIsLoading(false);
+  // Handle form submission
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      console.log(values);
+      
+      // Mock API call - in real app, this would be registration API
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       toast("Registration Successful", {
         description: "Welcome to AgriSmart! Your account has been created.",
       });
+      
       // Navigate to dashboard
       router.push("/dashboard");
-    }, 1500);
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+    } catch (error) {
+      console.error(error);
+      toast("Registration Failed", {
+        description: "An error occurred while creating your account. Please try again.",
+      });
+    }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 dark:bg-background p-4 py-10">
@@ -113,222 +122,265 @@ export default function SignUpPage() {
           <CardHeader>
             <CardTitle>Register</CardTitle>
             <CardDescription>
-              Enter your details to create an account
+              Enter your details to create an account (location and farm information are optional)
             </CardDescription>
           </CardHeader>
 
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Personal Information Section */}
-                <div className="space-y-4 md:col-span-2">
-                  <h3 className="font-medium text-lg">Personal Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input
-                        id="name"
-                        placeholder="Your full name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        disabled={isLoading}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Personal Information Section */}
+                  <div className="space-y-4 md:col-span-2">
+                    <h3 className="font-medium text-lg">Personal Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Full Name*</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Your full name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Phone Number*</FormLabel>
+                            <FormControl>
+                              <Input placeholder="10-digit number" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Email Address*</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Your email address" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Password*</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  type={showPassword ? "text" : "password"}
+                                  placeholder="Create a strong password"
+                                  {...field}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="absolute right-0 top-0 h-full px-3"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                >
+                                  {showPassword ? (
+                                    <EyeOff className="h-4 w-4" />
+                                  ) : (
+                                    <Eye className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="10-digit number"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        disabled={isLoading}
+                  {/* Location Information Section */}
+                  <div className="space-y-4 md:col-span-2">
+                    <h3 className="font-medium text-lg">Location Information (Optional)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="village"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Village/Town</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Your village or town" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="district"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>District</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Your district" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="state"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>State</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select state" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="barisal">Barisal</SelectItem>
+                                <SelectItem value="chittagong">Chittagong</SelectItem>
+                                <SelectItem value="dhaka">Dhaka</SelectItem>
+                                <SelectItem value="khulna">Khulna</SelectItem>
+                                <SelectItem value="mymensingh">Mymensingh</SelectItem>
+                                <SelectItem value="rajshahi">Rajshahi</SelectItem>
+                                <SelectItem value="rangpur">Rangpur</SelectItem>
+                                <SelectItem value="sylhet">Sylhet</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Your email address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={isLoading}
+                  {/* Farm Information Section */}
+                  <div className="space-y-4 md:col-span-2">
+                    <h3 className="font-medium text-lg">Farm Information (Optional)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="primaryCrop"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Primary Crop</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select main crop" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="wheat">Wheat</SelectItem>
+                                <SelectItem value="rice">Rice</SelectItem>
+                                <SelectItem value="corn">Corn/Maize</SelectItem>
+                                <SelectItem value="cotton">Cotton</SelectItem>
+                                <SelectItem value="sugarcane">Sugarcane</SelectItem>
+                                <SelectItem value="pulses">Pulses</SelectItem>
+                                <SelectItem value="vegetables">Vegetables</SelectItem>
+                                <SelectItem value="fruits">Fruits</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
-                      <div className="relative">
-                        <Input
-                          id="password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Create a strong password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          disabled={isLoading}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-0 top-0 h-full px-3"
-                          onClick={togglePasswordVisibility}
-                          disabled={isLoading}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
+                      <FormField
+                        control={form.control}
+                        name="landSize"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Land Size (in acres)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.5"
+                                placeholder="Size of your farm"
+                                {...field}
+                                value={field.value || ""}
+                                onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </div>
                 </div>
 
-                {/* Location Information Section */}
-                <div className="space-y-4 md:col-span-2">
-                  <h3 className="font-medium text-lg">Location Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="village">Village/Town</Label>
-                      <Input
-                        id="village"
-                        placeholder="Your village or town"
-                        value={village}
-                        onChange={(e) => setVillage(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="district">District</Label>
-                      <Input
-                        id="district"
-                        placeholder="Your district"
-                        value={district}
-                        onChange={(e) => setDistrict(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="state">State</Label>
-                      <Select
-                        value={state}
-                        onValueChange={setState}
-                        disabled={isLoading}
-                      >
-                        <SelectTrigger id="state">
-                          <SelectValue placeholder="Select state" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="barisal">Barisal</SelectItem>
-                          <SelectItem value="chittagong">Chittagong</SelectItem>
-                          <SelectItem value="dhaka">Dhaka</SelectItem>
-                          <SelectItem value="khulna">Khulna</SelectItem>
-                          <SelectItem value="mymensingh">Mymensingh</SelectItem>
-                          <SelectItem value="rajshahi">Rajshahi</SelectItem>
-                          <SelectItem value="rangpur">Rangpur</SelectItem>
-                          <SelectItem value="sylhet">Sylhet</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Farm Information Section */}
-                <div className="space-y-4 md:col-span-2">
-                  <h3 className="font-medium text-lg">Farm Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="primary-crop">Primary Crop</Label>
-                      <Select
-                        value={primaryCrop}
-                        onValueChange={setPrimaryCrop}
-                        disabled={isLoading}
-                      >
-                        <SelectTrigger id="primary-crop">
-                          <SelectValue placeholder="Select main crop" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="wheat">Wheat</SelectItem>
-                          <SelectItem value="rice">Rice</SelectItem>
-                          <SelectItem value="corn">Corn/Maize</SelectItem>
-                          <SelectItem value="cotton">Cotton</SelectItem>
-                          <SelectItem value="sugarcane">Sugarcane</SelectItem>
-                          <SelectItem value="pulses">Pulses</SelectItem>
-                          <SelectItem value="vegetables">Vegetables</SelectItem>
-                          <SelectItem value="fruits">Fruits</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="land-size">Land Size (in acres)</Label>
-                      <Input
-                        id="land-size"
-                        type="number"
-                        min="0"
-                        step="0.5"
-                        placeholder="Size of your farm"
-                        value={landSize}
-                        onChange={(e) => setLandSize(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <Checkbox
-                    id="terms"
-                    checked={acceptTerms}
-                    onCheckedChange={(checked) =>
-                      setAcceptTerms(checked as boolean)
-                    }
-                    disabled={isLoading}
-                    className="mt-1"
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="acceptTerms"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            I agree to the{" "}
+                            <Link
+                              href="/terms"
+                              className="text-primary hover:underline"
+                            >
+                              Terms of Service
+                            </Link>{" "}
+                            and{" "}
+                            <Link
+                              href="/privacy"
+                              className="text-primary hover:underline"
+                            >
+                              Privacy Policy
+                            </Link>*
+                          </FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
                   />
-                  <Label htmlFor="terms" className="ml-2 text-sm">
-                    I agree to the{" "}
-                    <Link
-                      href="/terms"
-                      className="text-primary hover:underline"
-                    >
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link
-                      href="/privacy"
-                      className="text-primary hover:underline"
-                    >
-                      Privacy Policy
-                    </Link>
-                  </Label>
-                </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Account...
-                    </>
-                  ) : (
-                    <>
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Create Account
-                    </>
-                  )}
-                </Button>
-              </div>
-            </form>
+                  <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                    {form.formState.isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Account...
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Create Account
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </CardContent>
 
           <CardFooter className="flex flex-col">
@@ -356,7 +408,7 @@ export default function SignUpPage() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <Button variant="outline" disabled={isLoading}>
+              <Button variant="outline" disabled={form.formState.isSubmitting}>
                 <svg
                   className="w-4 h-4"
                   aria-hidden="true"
@@ -372,7 +424,7 @@ export default function SignUpPage() {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" disabled={isLoading}>
+              <Button variant="outline" disabled={form.formState.isSubmitting}>
                 <svg
                   className="w-4 h-4"
                   aria-hidden="true"
