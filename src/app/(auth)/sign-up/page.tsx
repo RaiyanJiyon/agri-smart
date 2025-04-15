@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,6 +35,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 // Define the form schema using Zod with optional fields
 const formSchema = z.object({
@@ -67,6 +68,9 @@ const formSchema = z.object({
 
 export default function SignUpPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/services";
+
   const [showPassword, setShowPassword] = useState(false);
 
   // Define the form
@@ -91,9 +95,9 @@ export default function SignUpPage() {
     try {
       console.log(values);
 
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {"Content-type": 'application/json'},
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify(values),
       });
 
@@ -471,7 +475,11 @@ export default function SignUpPage() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <Button variant="outline" disabled={form.formState.isSubmitting}>
+              <Button
+                variant="outline"
+                disabled={form.formState.isSubmitting}
+                onClick={() => signIn("google", { callbackUrl: redirectPath })}
+              >
                 <svg
                   className="w-4 h-4"
                   aria-hidden="true"
@@ -487,7 +495,13 @@ export default function SignUpPage() {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" disabled={form.formState.isSubmitting}>
+              <Button
+                variant="outline"
+                disabled={form.formState.isSubmitting}
+                onClick={() =>
+                  signIn("facebook", { callbackUrl: redirectPath })
+                }
+              >
                 <svg
                   className="w-4 h-4"
                   aria-hidden="true"

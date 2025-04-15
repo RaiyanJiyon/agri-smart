@@ -44,7 +44,7 @@ const formSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get("redirect") || "/dashboard";
+  const redirectPath = searchParams.get("redirect") || "/services";
   const [showPassword, setShowPassword] = useState(false);
 
   // Define the form
@@ -60,18 +60,19 @@ export default function LoginPage() {
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await signIn('credentials', {
+      const response = await signIn("credentials", {
         email: values.email,
         password: values.password,
         redirect: false,
-        callbackUrl: redirectPath
+        callbackUrl: redirectPath,
       });
 
       if (response?.error) {
         toast.error("Login Failed", {
-          description: response.error === "CredentialsSignin" 
-            ? "Invalid email or password" 
-            : response.error,
+          description:
+            response.error === "CredentialsSignin"
+              ? "Invalid email or password"
+              : response.error,
         });
         return;
       }
@@ -245,7 +246,11 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <Button variant="outline" disabled={form.formState.isSubmitting}>
+              <Button
+                variant="outline"
+                disabled={form.formState.isSubmitting}
+                onClick={() => signIn("google", { callbackUrl: redirectPath })}
+              >
                 <svg
                   className="w-4 h-4"
                   aria-hidden="true"
@@ -261,7 +266,13 @@ export default function LoginPage() {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" disabled={form.formState.isSubmitting}>
+              <Button
+                variant="outline"
+                disabled={form.formState.isSubmitting}
+                onClick={() =>
+                  signIn("facebook", { callbackUrl: redirectPath })
+                }
+              >
                 <svg
                   className="w-4 h-4"
                   aria-hidden="true"

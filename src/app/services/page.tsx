@@ -76,7 +76,7 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-[hsl(var(--green-700))] dark:text-[hsl(var(--green-500))]">
-            Farm Dashboard
+            Farm Services
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
             Welcome back! Here&apos;s your farm at a glance
