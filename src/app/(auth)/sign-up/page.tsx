@@ -113,11 +113,11 @@ export default function SignUpPage() {
 
       // Navigate to login
       router.push("/login");
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast("Registration Failed", {
         description:
-          "An error occurred while creating your account. Please try again.",
+          `${error.message || "An error occurred while creating your account. Please try again."}`,
       });
     }
   }
