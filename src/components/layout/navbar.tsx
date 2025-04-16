@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -7,8 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/shared/mode-toggle";
 import { LanguageToggle } from "@/components/shared/language-toggle";
-import { Menu, Leaf, User } from "lucide-react";
+import { Menu, Leaf, User, Settings, LogOut, ChevronDown } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { signOut, useSession } from "next-auth/react";
+import { toast } from "sonner"; // Import toast from sonner
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -23,15 +31,23 @@ const navigation = [
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Handle sign-out with redirection and toast
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/login" }); // Redirect to sign-in page
+    toast("You have been logged out successfully.", {
+      description: "Redirecting to the sign-in page...",
+    });
+  };
 
   return (
     <nav
@@ -53,7 +69,6 @@ export default function Navbar() {
               </span>
             </Link>
           </div>
-
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
             {navigation.map((item) => (
@@ -70,19 +85,65 @@ export default function Navbar() {
               </Link>
             ))}
           </nav>
-
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-2">
               <ModeToggle />
               <LanguageToggle />
-              <Button asChild variant="outline" size="sm" className="gap-2">
-                <Link href={'/login'}>
-                <User className="h-4 w-4" />
-                <span>Sign In</span>
-                </Link>
-              </Button>
+              {session?.user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <span>{session?.user?.name}</span>
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/profile"
+                        className="flex items-center cursor-pointer"
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                        <span className="ml-auto text-xs text-muted-foreground">
+                          Ctrl+P
+                        </span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/settings"
+                        className="flex items-center cursor-pointer"
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                        <span className="ml-auto text-xs text-muted-foreground">
+                          Ctrl+,
+                        </span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Button
+                        onClick={handleSignOut} // Call the custom sign-out handler
+                        variant="ghost"
+                        className="flex items-center cursor-pointer text-red-500 dark:text-red-400 w-full justify-start"
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Sign out</span>
+                      </Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button asChild variant="outline" size="sm" className="gap-2">
+                  <Link href="/login">
+                    <User className="h-4 w-4" />
+                    <span>Sign In</span>
+                  </Link>
+                </Button>
+              )}
             </div>
-
             {/* Mobile Menu */}
             <div className="lg:hidden flex items-center gap-2">
               <ModeToggle />
@@ -99,7 +160,6 @@ export default function Navbar() {
                     <VisuallyHidden>
                       <h2>Menu</h2>
                     </VisuallyHidden>
-
                     <div className="flex items-center justify-between py-4">
                       <Link href="/" className="flex items-center gap-2">
                         <div className="bg-[hsl(var(--green-600))] text-white p-1.5 rounded-lg">
@@ -110,6 +170,16 @@ export default function Navbar() {
                         </span>
                       </Link>
                     </div>
+                    {session?.user && (
+                      <div className="flex items-center gap-3 py-4 border-b border-gray-100 dark:border-gray-800">
+                        <div>
+                          <p className="font-medium">{session?.user?.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {session?.user?.email}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                     <nav className="flex flex-col gap-4 py-8">
                       {navigation.map((item) => (
                         <Link
@@ -124,21 +194,50 @@ export default function Navbar() {
                           {item.name}
                         </Link>
                       ))}
+                      {session?.user && (
+                        <>
+                          <Link
+                            href="/profile"
+                            className="text-lg font-medium transition-colors hover:text-green-700 dark:hover:text-green-500 text-gray-600 dark:text-gray-300 flex items-center gap-2"
+                          >
+                            <User className="h-4 w-4" />
+                            Profile
+                          </Link>
+                          <Link
+                            href="/settings"
+                            className="text-lg font-medium transition-colors hover:text-green-700 dark:hover:text-green-500 text-gray-600 dark:text-gray-300 flex items-center gap-2"
+                          >
+                            <Settings className="h-4 w-4" />
+                            Settings
+                          </Link>
+                        </>
+                      )}
                     </nav>
                     <div className="mt-auto flex flex-col gap-4 py-4">
                       <LanguageToggle />
-                      <Button
-                        asChild
-                        className="w-full bg-green-600 hover:bg-green-700"
-                      >
-                        <Link
-                          href="/login"
-                          className="flex items-center justify-center gap-2"
+                      {session?.user ? (
+                        <Button
+                          onClick={handleSignOut} // Call the custom sign-out handler
+                          variant="outline"
+                          className="w-full border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600"
                         >
-                          <User className="h-4 w-4" />
-                          <span>Sign In</span>
-                        </Link>
-                      </Button>
+                          <LogOut className="h-4 w-4 mr-2" />
+                          <span>Sign Out</span>
+                        </Button>
+                      ) : (
+                        <Button
+                          asChild
+                          className="w-full bg-green-600 hover:bg-green-700"
+                        >
+                          <Link
+                            href="/login"
+                            className="flex items-center justify-center gap-2"
+                          >
+                            <User className="h-4 w-4" />
+                            <span>Sign In</span>
+                          </Link>
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </SheetContent>
