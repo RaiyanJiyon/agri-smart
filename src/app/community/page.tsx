@@ -13,7 +13,7 @@ export default function CommunityPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Handle form submission
-  const handleCreatePost = async (data: { postTitle: string; postContent: string; postTags: string }) => {
+  const handleCreatePost = async (data: { postTitle: string; postContent: string; postTags?: string }) => {
     const { postTitle, postContent } = data;
 
     if (!postTitle.trim() || !postContent.trim()) {

@@ -13,7 +13,14 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 // Define the validation schema
 const formSchema = z.object({
@@ -29,7 +36,11 @@ interface NewDiscussionDialogProps {
   onSubmit: (data: z.infer<typeof formSchema>) => void;
 }
 
-export function NewDiscussionDialog({ open, onOpenChange, onSubmit }: NewDiscussionDialogProps) {
+export function NewDiscussionDialog({
+  open,
+  onOpenChange,
+  onSubmit,
+}: NewDiscussionDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,7 +55,9 @@ export function NewDiscussionDialog({ open, onOpenChange, onSubmit }: NewDiscuss
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Create New Discussion</DialogTitle>
-          <DialogDescription>Share your farming questions or insights with the community.</DialogDescription>
+          <DialogDescription>
+            Share your farming questions or insights with the community.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -55,7 +68,10 @@ export function NewDiscussionDialog({ open, onOpenChange, onSubmit }: NewDiscuss
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="What's your question or topic?" {...field} />
+                    <Input
+                      placeholder="What's your question or topic?"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -98,7 +114,11 @@ export function NewDiscussionDialog({ open, onOpenChange, onSubmit }: NewDiscuss
               )}
             />
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit" className="bg-green-600 hover:bg-green-700">
