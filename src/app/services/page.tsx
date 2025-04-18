@@ -29,7 +29,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const city = "Sylhet";
+      const city = "Dhaka";
 
       try {
         // Fetch current weather
