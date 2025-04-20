@@ -7,7 +7,12 @@ export async function POST(req: NextRequest) {
     await connectToDB();
     const body = await req.json();
 
+    console.log('Received data:', body); // <-- Add this line
+
     const newPost = await Post.create(body);
+
+    console.log(newPost);
+    
     return NextResponse.json(newPost, { status: 201 });
   } catch (error) {
     console.error(error);
@@ -17,6 +22,7 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
 export async function GET() {
   try {
     await connectToDB();

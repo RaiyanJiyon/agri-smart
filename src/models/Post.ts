@@ -7,7 +7,8 @@ const PostSchema = new mongoose.Schema(
     content: { type: String, required: true, trim: true },
     tags: [{ type: String, trim: true }],
     author: {
-      name: String,
+      name: { type: String, required: true },
+      email: { type: String, required: true },
       avatar: String,
       isExpert: { type: Boolean, default: false },
     },

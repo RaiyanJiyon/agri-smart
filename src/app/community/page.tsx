@@ -6,39 +6,10 @@ import ForumPost from "@/app/community/components/forum-post";
 import TopContributors from "@/app/community/components/top-contributors";
 import PopularTopics from "./components/popular-topics";
 import { useState } from "react";
-import { toast } from "sonner";
 import { NewDiscussionDialog } from "./components/new-discussion-dialog";
 
 export default function CommunityPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  // Handle form submission
-  const handleCreatePost = async (data: { postTitle: string; postContent: string; postTags?: string }) => {
-    const { postTitle, postContent } = data;
-
-    if (!postTitle.trim() || !postContent.trim()) {
-      toast("Missing information", {
-        description: "Please provide both a title and content for your post.",
-      });
-      return;
-    }
-
-    try {
-      // TODO: real api will be added in here
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Success message
-      toast("Post created!", {
-        description: "Your discussion has been posted successfully.",
-      });
-    } catch (error) {
-      console.error(error);
-      toast("Error", {
-        description: "There was a problem creating your post. Please try again.",
-      });
-    }
-  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -79,7 +50,6 @@ export default function CommunityPage() {
       <NewDiscussionDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        onSubmit={handleCreatePost}
       />
     </div>
   );
