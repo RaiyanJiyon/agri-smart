@@ -1,0 +1,90 @@
+[
+  {
+    "author": {
+      "name": "Dr. Emily Chen",
+      "email": "emilychen@gmail.com",
+      "avatar": "https://i.ibb.co.com/3YBHKxy9/profile-picture.jpg",
+      "isExpert": false
+    },
+    "title": "How to Improve Soil Fertility?",
+    "content": "I'm looking for advice on improving soil fertility for my crops. What are some natural methods to increase nutrient levels?",
+    "tags": ["soil", "farming", "agriculture"],
+    "likes": 0,
+    "replies": [],
+    "status": "unanswered",
+    "createdAt": "2025-04-20T03:39:08.290Z",
+    "updatedAt": "2025-04-20T03:39:08.290Z",
+    "__v": 0
+  },
+  {
+    "author": {
+      "name": "Miguel Fernandez",
+      "email": "miguelfernandez@gmail.com",
+      "avatar": "https://i.ibb.co.com/0pd6sLXS/person3.png",
+      "isExpert": true
+    },
+    "title": "Best Practices for Crop Rotation",
+    "content": "Can someone share their experience with crop rotation? How does it help prevent soil depletion?",
+    "tags": ["crop-rotation", "tips", "sustainability"],
+    "likes": 0,
+    "replies": [],
+    "status": "unanswered",
+    "createdAt": "2025-04-20T04:12:32.540Z",
+    "updatedAt": "2025-04-20T04:12:32.540Z",
+    "__v": 0
+  },
+  {
+    "author": {
+      "name": "Dr. Sarah Johnson",
+      "email": "sarahjohnson@gmail.com",
+      "avatar": "https://i.ibb.co.com/chqDn1CZ/person1.png",
+      "isExpert": false
+    },
+    "title": "Organic Pest Control Methods",
+    "content": "What are some effective organic pest control methods for small-scale farms? Any recommendations?",
+    "tags": ["pest-control", "organic", "farming"],
+    "likes": 5,
+    "replies": [
+      {
+        "_id": "68046c5ced8eb5718e9896b1",
+        "author": {
+          "name": "John Doe",
+          "avatar": "https://i.ibb.co.com/WvFwDtmN/person2.png"
+        },
+        "content": "Neem oil is a great natural pesticide.",
+        "createdAt": "2025-04-20T05:45:12.320Z"
+      }
+    ],
+    "status": "solved",
+    "createdAt": "2025-04-20T05:00:00.000Z",
+    "updatedAt": "2025-04-20T05:45:12.320Z",
+    "__v": 1
+  },
+  {
+    "author": {
+      "name": "Aisha Patel",
+      "email": "aishapatel@gmail.com",
+      "avatar": "https://i.ibb.co.com/WvFwDtmN/person2.png",
+      "isExpert": true
+    },
+    "title": "Using Drones in Agriculture",
+    "content": "Has anyone used drones for monitoring crop health? How effective is it compared to traditional methods?",
+    "tags": ["drones", "technology", "agriculture"],
+    "likes": 3,
+    "replies": [
+      {
+        "_id": "68046c5ced8eb5718e9896b2",
+        "author": {
+          "name": "Jane Smith",
+          "avatar": "https://i.ibb.co.com/0pd6sLXS/person3.png"
+        },
+        "content": "Drones are very effective for large farms.",
+        "createdAt": "2025-04-20T06:20:45.780Z"
+      }
+    ],
+    "status": "unanswered",
+    "createdAt": "2025-04-20T06:00:00.000Z",
+    "updatedAt": "2025-04-20T06:20:45.780Z",
+    "__v": 1
+  }
+]
