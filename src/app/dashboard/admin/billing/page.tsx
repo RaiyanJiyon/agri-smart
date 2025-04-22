@@ -332,7 +332,7 @@ export default function BillingPage() {
                           <Badge
                             variant={
                               invoice.status === "Paid"
-                                ? "success"
+                                ? "default"
                                 : invoice.status === "Pending"
                                 ? "outline"
                                 : "destructive"
@@ -409,7 +409,7 @@ export default function BillingPage() {
                           <Badge
                             variant={
                               subscription.status === "Active"
-                                ? "success"
+                                ? "default"
                                 : "destructive"
                             }
                           >

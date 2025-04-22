@@ -15,9 +15,9 @@ import {
   CreditCard,
   BarChart3,
   Flag,
-  FileCog,
   BookOpen,
   LogOut,
+  Leaf,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -133,11 +133,6 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
       href: "/dashboard/admin/billing",
       icon: <CreditCard className="h-5 w-5" />,
     },
-    {
-      title: "System Settings",
-      href: "/dashboard/admin/settings",
-      icon: <FileCog className="h-5 w-5" />,
-    },
   ]
 
   const navItems = userRole === "admin" ? adminNavItems : userNavItems
@@ -176,23 +171,7 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
           ) : (
             <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
               <div className="bg-green-600 text-white p-1.5 rounded-lg">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M16 2s.5 2.25.5 4.5-.5 4.5-.5 4.5" />
-                  <path d="M12 2s.5 2.25.5 4.5-.5 4.5-.5 4.5" />
-                  <path d="M8 2s.5 2.25.5 4.5-.5 4.5-.5 4.5" />
-                  <path d="M20 14c.5 0 1.5.5 1.5 2.5S20 20 20 20h-7" />
-                  <path d="M20 14h-7c-1 0-1.5-.5-2.5-2-1-1.5-2-2-3.5-2s-2.5.5-2.5 2.5c0 3 2.5 9 2.5 9H11" />
-                  <path d="M11 19.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
-                </svg>
+              <Leaf className="h-5 w-5" />
               </div>
               <span className="text-green-700 dark:text-green-500">AgriSmart</span>
             </Link>
