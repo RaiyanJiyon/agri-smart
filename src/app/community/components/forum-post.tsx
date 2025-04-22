@@ -13,7 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, ThumbsUp, Award, Filter, Search, Send } from 'lucide-react';
+import {
+  MessageSquare,
+  ThumbsUp,
+  Award,
+  Filter,
+  Search,
+  Send,
+} from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
 export type Comment = {
@@ -28,7 +35,7 @@ export type Comment = {
 export type Post = {
   id: string;
   title: string;
-  content: string,
+  content: string;
   author: string;
   avatar: string;
   time: string;
@@ -48,16 +55,16 @@ const ForumPost = ({ posts }: ForumPostProps) => {
   const [newComments, setNewComments] = useState<Record<string, string>>({});
 
   const toggleComments = (postId: string) => {
-    setOpenComments(prev => ({
+    setOpenComments((prev) => ({
       ...prev,
-      [postId]: !prev[postId]
+      [postId]: !prev[postId],
     }));
   };
 
   const handleCommentChange = (postId: string, value: string) => {
-    setNewComments(prev => ({
+    setNewComments((prev) => ({
       ...prev,
-      [postId]: value
+      [postId]: value,
     }));
   };
 
@@ -65,10 +72,10 @@ const ForumPost = ({ posts }: ForumPostProps) => {
     if (!newComments[postId]?.trim()) return;
 
     console.log(`New comment for post ${postId}: ${newComments[postId]}`);
-    
-    setNewComments(prev => ({
+
+    setNewComments((prev) => ({
       ...prev,
-      [postId]: ""
+      [postId]: "",
     }));
   };
 
@@ -100,14 +107,17 @@ const ForumPost = ({ posts }: ForumPostProps) => {
             </Card>
           ) : (
             posts.map((post) => (
-              <Card key={post.id} className="hover:border-green-200 transition-colors">
+              <Card
+                key={post.id}
+                className="hover:border-green-200 transition-colors"
+              >
                 <CardHeader className="pb-2">
                   <div className="flex justify-between">
                     <CardTitle className="text-lg font-medium hover:text-green-700 dark:hover:text-green-500 cursor-pointer">
                       {post.title}
                     </CardTitle>
                     <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <button 
+                      <button
                         onClick={() => toggleComments(post.id)}
                         className="flex items-center gap-1 hover:text-green-600 transition-colors"
                         aria-label="Show comments"
@@ -123,12 +133,12 @@ const ForumPost = ({ posts }: ForumPostProps) => {
                   </div>
                 </CardHeader>
                 <CardContent className="pb-2">
-                <div className="mb-4">
+                  <div className="mb-4">
                     <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">
                       {post.content}
                     </p>
                   </div>
-                  
+
                   <div className="flex gap-2 mb-2">
                     {post.tags.map((tag, j) => (
                       <Badge
@@ -162,11 +172,13 @@ const ForumPost = ({ posts }: ForumPostProps) => {
 
                   {openComments[post.id] && (
                     <div className="w-full mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-                      <h4 className="text-sm font-medium mb-3">Comments ({post.replies})</h4>
-                      
+                      <h4 className="text-sm font-medium mb-3">
+                        Comments ({post.replies})
+                      </h4>
+
                       <div className="space-y-4 mb-4">
                         {post.comments && post.comments.length > 0 ? (
-                          post.comments.map(comment => (
+                          post.comments.map((comment) => (
                             <div key={comment.id} className="flex gap-3">
                               <Avatar className="h-8 w-8">
                                 <AvatarFallback className="text-xs">
@@ -176,8 +188,12 @@ const ForumPost = ({ posts }: ForumPostProps) => {
                               <div className="flex-1">
                                 <div className="bg-muted p-3 rounded-lg">
                                   <div className="flex justify-between items-center mb-1">
-                                    <span className="font-medium text-sm">{comment.author}</span>
-                                    <span className="text-xs text-gray-500">{comment.time}</span>
+                                    <span className="font-medium text-sm">
+                                      {comment.author}
+                                    </span>
+                                    <span className="text-xs text-gray-500">
+                                      {comment.time}
+                                    </span>
                                   </div>
                                   <p className="text-sm">{comment.content}</p>
                                 </div>
@@ -186,29 +202,37 @@ const ForumPost = ({ posts }: ForumPostProps) => {
                                     <ThumbsUp className="h-3 w-3" />
                                     <span>{comment.likes}</span>
                                   </button>
-                                  <button className="text-xs text-gray-500 hover:text-green-600">Reply</button>
+                                  <button className="text-xs text-gray-500 hover:text-green-600">
+                                    Reply
+                                  </button>
                                 </div>
                               </div>
                             </div>
                           ))
                         ) : (
-                          <p className="text-sm text-gray-500">No comments yet. Be the first to comment!</p>
+                          <p className="text-sm text-gray-500">
+                            No comments yet. Be the first to comment!
+                          </p>
                         )}
                       </div>
 
                       <div className="flex gap-3 items-start">
                         <Avatar className="h-8 w-8">
-                          <AvatarFallback className="text-xs">YO</AvatarFallback>
+                          <AvatarFallback className="text-xs">
+                            YO
+                          </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 relative">
-                          <Textarea 
-                            placeholder="Write a comment..." 
+                          <Textarea
+                            placeholder="Write a comment..."
                             className="min-h-[80px] pr-10"
-                            value={newComments[post.id] || ''}
-                            onChange={(e) => handleCommentChange(post.id, e.target.value)}
+                            value={newComments[post.id] || ""}
+                            onChange={(e) =>
+                              handleCommentChange(post.id, e.target.value)
+                            }
                           />
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             className="absolute right-2 bottom-2 h-8 w-8 p-0 bg-green-600 hover:bg-green-700"
                             onClick={() => submitComment(post.id)}
                             disabled={!newComments[post.id]?.trim()}

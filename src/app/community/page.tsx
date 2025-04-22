@@ -9,6 +9,37 @@ import { useState, useEffect } from "react";
 import { NewDiscussionDialog } from "./components/new-discussion-dialog";
 import Loading from "../loading";
 
+interface Author {
+  name: string;
+  email: string;
+  avatar: string;
+  isExpert: boolean;
+}
+
+interface Reply {
+  _id: string;
+  author: {
+    name: string;
+    avatar: string;
+  };
+  content: string;
+  createdAt: string;
+}
+
+interface ApiPost {
+  _id: string;
+  title: string;
+  content: string;
+  author: Author;
+  tags: string[];
+  likes: number;
+  replies: Reply[];
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 const formatTime = (isoString: string) => {
   const date = new Date(isoString);
   return date.toLocaleDateString('en-US', { 
@@ -30,9 +61,9 @@ export default function CommunityPage() {
         if (!response.ok) {
           throw new Error("Failed to fetch posts");
         }
-        const data = await response.json();
+        const data: ApiPost[] = await response.json();
         
-        const transformedPosts = data.map((post: any) => ({
+        const transformedPosts: Post[] = data.map((post) => ({
           id: post._id,
           title: post.title,
           content: post.content,
@@ -43,7 +74,7 @@ export default function CommunityPage() {
           likes: post.likes,
           tags: post.tags,
           expert: post.author.isExpert,
-          comments: post.replies?.map((reply: any) => ({
+          comments: post.replies?.map((reply) => ({
             id: reply._id,
             author: reply.author.name,
             avatar: reply.author.avatar,
