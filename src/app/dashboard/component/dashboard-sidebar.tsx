@@ -24,6 +24,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ModeToggle } from "@/components/shared/mode-toggle"
 
+
 interface DashboardSidebarProps {
   userRole: "admin" | "user"
 }
