@@ -95,10 +95,15 @@ export default function SignUpPage() {
     try {
       console.log(values);
 
+      const submissionData = {
+        ...values,
+        role: "farmer"
+      }
+
       const response = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify(submissionData),
       });
 
       const data = await response.json();

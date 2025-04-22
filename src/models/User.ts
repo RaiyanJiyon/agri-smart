@@ -6,6 +6,7 @@ export interface IUser extends Document {
   phone: string;
   email: string;
   password: string;
+  role: string;
   village?: string;
   district?: string;
   state?: string;
@@ -19,6 +20,12 @@ const UserSchema: Schema = new Schema(
     phone: { type: String, required: false },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: false }, // Store hashed passwords!
+    role: {
+      type: String, 
+      require: true,
+      enum: ['farmer', 'admin', 'expert'],
+      default: 'farmer' // Set default role
+    },
     village: String,
     district: String,
     state: String,

@@ -5,37 +5,70 @@ import User from "@/models/User";
 import { connectToDB } from "@/lib/mongoose/connect";
 
 export async function POST(req: Request) {
-  await connectToDB();
-  const body = await req.json();
-
-  const { name, phone, email, password, village, district, state, primaryCrop, landSize } = body;
-
   try {
+    await connectToDB();
+    const body = await req.json();
+
+    console.log("Received registration data:", body); // Debug log
+
+    const { name, phone, email, password, village, district, state, primaryCrop, landSize } = body;
+
+    // Validate required fields
+    if (!name || !email || !password || !phone) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
     // Check for existing user
-    const existing = await User.findOne({ email });
-    if (existing) {
-      return NextResponse.json({ error: "Email already exists" }, { status: 409 });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "Email already exists" },
+        { status: 409 }
+      );
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Save user
-    const user = await User.create({
+    // Create new user with explicit role
+    const newUser = await User.create({
       name,
       phone,
       email,
       password: hashedPassword,
-      village,
-      district,
-      state,
-      primaryCrop,
-      landSize,
+      role: "farmer", // Explicitly set role
+      village: village || undefined,
+      district: district || undefined,
+      state: state || undefined,
+      primaryCrop: primaryCrop || undefined,
+      landSize: landSize || undefined,
     });
 
-    return NextResponse.json(user, { status: 201 });
-  } catch (err) {
-    console.error("Error creating user:", err);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    console.log("Created user:", newUser); // Debug log
+
+    // Return user data without password
+    const userResponse = {
+      id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+      phone: newUser.phone,
+      village: newUser.village,
+      district: newUser.district,
+      state: newUser.state,
+      createdAt: newUser.createdAt,
+    };
+
+    return NextResponse.json(userResponse, { status: 201 });
+  } catch (error) {
+    console.error("Error in user registration:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
