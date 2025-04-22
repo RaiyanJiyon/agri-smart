@@ -49,6 +49,10 @@ export default function Navbar() {
     });
   };
 
+  if (pathname.includes('/dashboard')) {
+    return;
+  }
+
   return (
     <nav
       className={`sticky top-0 z-50 w-full transition-all duration-200 ${

@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,8 +13,15 @@ import {
   Youtube,
   ArrowRight,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname.includes('/dashboard')) {
+    return;
+  }
+
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 py-12">
       <div className="container mx-auto px-4">
