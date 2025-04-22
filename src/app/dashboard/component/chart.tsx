@@ -61,6 +61,7 @@ const ChartContainer = React.forwardRef<
 ChartContainer.displayName = "Chart"
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color)
 
   if (!colorConfig.length) {
@@ -319,7 +320,6 @@ interface ChartProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Chart({
   data,
   showLegend = true,
-  showValues = true,
   valueFormatter = (value: number) => value.toString(),
   colors = ["bg-green-500", "bg-blue-500", "bg-purple-500", "bg-amber-500", "bg-red-500", "bg-indigo-500"],
   className,
