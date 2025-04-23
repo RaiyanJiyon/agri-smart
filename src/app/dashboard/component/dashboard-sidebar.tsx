@@ -71,8 +71,8 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
       icon: <Send className="h-5 w-5" />,
     },
     {
-      title: "Uploads",
-      href: "/dashboard/user/uploads",
+      title: "Disease Detector",
+      href: "/dashboard/user/disease-detector",
       icon: <Upload className="h-5 w-5" />,
     },
     {

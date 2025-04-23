@@ -11,13 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Upload,
-  ImageIcon,
-  Loader2,
-  AlertTriangle,
-  Check,
-} from "lucide-react";
+import { Upload, ImageIcon, Loader2, AlertTriangle, Check } from "lucide-react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 type UploadState = "idle" | "uploading" | "success" | "error";
@@ -66,7 +60,7 @@ export default function DiseaseDetection() {
     setResult(null);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro"  });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
       const result = await model.generateContent([
         {
@@ -143,7 +137,9 @@ Respond ONLY with JSON containing the following fields:
             ) : (
               <div className="flex flex-col items-center justify-center text-gray-500">
                 <ImageIcon className="h-16 w-16 mb-4 opacity-20" />
-                <p className="mb-2">Upload a clear image of the affected plant</p>
+                <p className="mb-2">
+                  Upload a clear image of the affected plant
+                </p>
                 <p className="text-xs text-gray-400">
                   Supported formats: JPG, PNG
                 </p>
