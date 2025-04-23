@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -6,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/shared/mode-toggle";
 import { LanguageToggle } from "@/components/shared/language-toggle";
-import { Menu, Leaf, User, Settings, LogOut, ChevronDown } from "lucide-react";
+import { Menu, Leaf, User, Settings, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   DropdownMenu,
@@ -104,7 +105,7 @@ export default function Navbar() {
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem asChild>
                       <Link
-                        href="/profile"
+                        href="dashboard/profile"
                         className="flex items-center cursor-pointer"
                       >
                         <User className="mr-2 h-4 w-4" />
@@ -116,11 +117,11 @@ export default function Navbar() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link
-                        href="/settings"
+                        href={`/dashboard/${session?.user.role}`}
                         className="flex items-center cursor-pointer"
                       >
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
                         <span className="ml-auto text-xs text-muted-foreground">
                           Ctrl+,
                         </span>

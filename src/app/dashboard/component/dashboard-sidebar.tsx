@@ -66,8 +66,8 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
       icon: <FileText className="h-5 w-5" />,
     },
     {
-      title: "Inquiries",
-      href: "/dashboard/user/inquiries",
+      title: "Market Insights",
+      href: "/dashboard/user/market-insights",
       icon: <Send className="h-5 w-5" />,
     },
     {
