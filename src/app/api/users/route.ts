@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       phone,
       email,
       password: hashedPassword,
-      role: "farmer", // Explicitly set role
+      role: "user", // Explicitly set role
       village: village || undefined,
       district: district || undefined,
       state: state || undefined,

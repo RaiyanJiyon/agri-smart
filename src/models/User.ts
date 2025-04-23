@@ -23,8 +23,8 @@ const UserSchema: Schema = new Schema(
     role: {
       type: String, 
       require: true,
-      enum: ['farmer', 'admin', 'expert'],
-      default: 'farmer' // Set default role
+      enum: ['user', 'admin', 'expert'],
+      default: 'user' // Set default role
     },
     village: String,
     district: String,

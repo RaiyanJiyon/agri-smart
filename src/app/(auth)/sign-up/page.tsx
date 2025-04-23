@@ -97,7 +97,7 @@ export default function SignUpPage() {
 
       const submissionData = {
         ...values,
-        role: "farmer"
+        role: "user"
       }
 
       const response = await fetch("/api/users", {
