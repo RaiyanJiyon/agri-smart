@@ -251,8 +251,8 @@ export default function UserDashboard() {
                   icon: <MessageSquare className="h-6 w-6" />,
                 },
                 {
-                  title: "Upload Data",
-                  href: "/dashboard/user/uploads",
+                  title: "Upload Image",
+                  href: "/dashboard/user/disease-detector",
                   icon: <Upload className="h-6 w-6" />,
                 },
                 {

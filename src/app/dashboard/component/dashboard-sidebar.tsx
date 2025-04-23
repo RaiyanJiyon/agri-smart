@@ -61,8 +61,8 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
       icon: <MessageSquare className="h-5 w-5" />,
     },
     {
-      title: "Reports",
-      href: "/dashboard/user/reports",
+      title: "Crop Recommendation",
+      href: "/dashboard/user/crop-recommendation",
       icon: <FileText className="h-5 w-5" />,
     },
     {
