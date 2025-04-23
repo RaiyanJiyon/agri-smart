@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -12,7 +14,6 @@ import {
   BarChart3,
   MessageSquare,
   Upload,
-  AlertTriangle,
   FileText,
   ChevronRight,
   Lightbulb,
@@ -20,8 +21,65 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { DashboardWrapper } from "../component/dashboard-wrapper";
+import WeatherWidget from "@/app/services/components/weather-widget";
+import { useEffect, useState } from "react";
+import { CurrentWeather, ProcessedForecast } from "@/lib/types";
+import {
+  fetchCurrentWeather,
+  fetchForecast,
+} from "@/lib/services/weatherService";
+import { processForecastData } from "@/lib/utils/weatherUtils";
+import Loading from "@/app/loading";
+import Alert from "@/app/services/components/alert";
 
 export default function UserDashboard() {
+  const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
+  const [forecastData, setForecastData] = useState<ProcessedForecast[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const city = "Cherrapunji";
+
+      try {
+        // Fetch current weather
+        const currentWeather = await fetchCurrentWeather(city);
+        setWeatherData(currentWeather);
+
+        // Fetch forecast
+        const forecast = await fetchForecast(city);
+        const processedForecast = processForecastData(forecast.list);
+        setForecastData(processedForecast);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+    const intervalId = setInterval(fetchData, 60000); // Fetch every 60 seconds
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
+
+  // Function to determine if an alert should be shown
+  const getAlert = (): { title: string; description: string } | null => {
+    if (!forecastData.length) return null;
+
+    const hasHeavyRainfall = forecastData.some(
+      (day) => day.description.toLowerCase().includes("rain") && day.temp < 20
+    );
+
+    if (hasHeavyRainfall) {
+      return {
+        title: "Weather Alert",
+        description:
+          "Heavy rainfall expected in your region over the next 48 hours. Consider adjusting your irrigation schedule.",
+      };
+    }
+
+    return null;
+  };
+
+  const alert = getAlert();
+
   return (
     <DashboardWrapper userRole="user">
       <div className="space-y-6">
@@ -40,23 +98,18 @@ export default function UserDashboard() {
           </Button>
         </div>
 
-        {/* Alert */}
-        <Card className="border-orange-200 bg-orange-50 dark:bg-orange-900/20 dark:border-orange-900/30">
-          <CardHeader className="pb-2">
-            <div className="flex items-center">
-              <AlertTriangle className="h-5 w-5 text-orange-500 mr-2" />
-              <CardTitle className="text-lg text-orange-700 dark:text-orange-400">
-                Weather Alert
-              </CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-orange-700 dark:text-orange-400">
-              Heavy rainfall expected in your region over the next 48 hours.
-              Consider adjusting your irrigation schedule.
-            </CardDescription>
-          </CardContent>
-        </Card>
+        {/* Alert Section */}
+        {alert && <Alert title={alert.title} description={alert.description} />}
+
+        {/* Weather Widget Section */}
+        {weatherData && forecastData.length ? (
+          <WeatherWidget
+            weatherData={weatherData}
+            forecastData={forecastData}
+          />
+        ) : (
+          <Loading />
+        )}
 
         {/* Main Stats */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -251,13 +304,13 @@ export default function UserDashboard() {
                   icon: <MessageSquare className="h-6 w-6" />,
                 },
                 {
-                  title: "Upload Image",
+                  title: "Disease Detector",
                   href: "/dashboard/user/disease-detector",
                   icon: <Upload className="h-6 w-6" />,
                 },
                 {
-                  title: "View Reports",
-                  href: "/dashboard/user/reports",
+                  title: "Crop Recommendation",
+                  href: "/dashboard/user/crop-recommendation",
                   icon: <FileText className="h-6 w-6" />,
                 },
                 {

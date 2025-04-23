@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Users,
@@ -18,35 +18,34 @@ import {
   BookOpen,
   LogOut,
   Leaf,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { ModeToggle } from "@/components/shared/mode-toggle"
-
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ModeToggle } from "@/components/shared/mode-toggle";
 
 interface DashboardSidebarProps {
-  userRole: "admin" | "user"
+  userRole: "admin" | "user";
 }
 
 export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
-  const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
+  const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
 
   // Adapt to screen size
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setCollapsed(true)
+        setCollapsed(true);
       } else {
-        setCollapsed(false)
+        setCollapsed(false);
       }
-    }
+    };
 
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Define navigation items based on user role
   const userNavItems = [
@@ -87,7 +86,7 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
     },
     {
       title: "Profile",
-      href: "/dashboard/user/profile",
+      href: "/dashboard/profile",
       icon: <User className="h-5 w-5" />,
     },
     {
@@ -95,7 +94,7 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
       href: "/dashboard/user/billing",
       icon: <CreditCard className="h-5 w-5" />,
     },
-  ]
+  ];
 
   const adminNavItems = [
     {
@@ -133,15 +132,15 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
       href: "/dashboard/admin/billing",
       icon: <CreditCard className="h-5 w-5" />,
     },
-  ]
+  ];
 
-  const navItems = userRole === "admin" ? adminNavItems : userNavItems
+  const navItems = userRole === "admin" ? adminNavItems : userNavItems;
 
   return (
     <aside
       className={cn(
         "fixed left-0 top-0 z-30 h-screen border-r bg-background transition-all duration-300",
-        collapsed ? "w-16" : "w-64",
+        collapsed ? "w-16" : "w-64"
       )}
     >
       <div className="flex h-full flex-col">
@@ -169,11 +168,16 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
               </div>
             </div>
           ) : (
-            <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+            <Link
+              href="/"
+              className="flex items-center gap-2 font-semibold text-lg"
+            >
               <div className="bg-green-600 text-white p-1.5 rounded-lg">
-              <Leaf className="h-5 w-5" />
+                <Leaf className="h-5 w-5" />
               </div>
-              <span className="text-green-700 dark:text-green-500">AgriSmart</span>
+              <span className="text-green-700 dark:text-green-500">
+                AgriSmart
+              </span>
             </Link>
           )}
         </div>
@@ -222,8 +226,10 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
                 href={item.href}
                 className={cn(
                   "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground",
-                  pathname === item.href ? "bg-accent text-accent-foreground" : "text-muted-foreground",
-                  collapsed && "justify-center px-0",
+                  pathname === item.href
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground",
+                  collapsed && "justify-center px-0"
                 )}
               >
                 {item.icon}
@@ -242,9 +248,13 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
             </Avatar>
             {!collapsed && (
               <div className="flex-1 overflow-hidden">
-                <p className="text-sm font-medium leading-none">{userRole === "admin" ? "Admin User" : "John Doe"}</p>
+                <p className="text-sm font-medium leading-none">
+                  {userRole === "admin" ? "Admin User" : "John Doe"}
+                </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {userRole === "admin" ? "admin@agrismart.com" : "john@example.com"}
+                  {userRole === "admin"
+                    ? "admin@agrismart.com"
+                    : "john@example.com"}
                 </p>
               </div>
             )}
@@ -256,7 +266,7 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
             size={collapsed ? "icon" : "default"}
             className={cn(
               "w-full text-muted-foreground hover:text-foreground hover:bg-accent",
-              collapsed && "h-10 w-10",
+              collapsed && "h-10 w-10"
             )}
           >
             <LogOut className={cn("h-4 w-4", !collapsed && "mr-2")} />
@@ -265,5 +275,5 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
         </div>
       </div>
     </aside>
-  )
+  );
 }
