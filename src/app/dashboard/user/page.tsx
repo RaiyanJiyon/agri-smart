@@ -226,9 +226,9 @@ export default function UserDashboard() {
               </div>
               <div className="mt-4 flex justify-center">
                 <Button variant="outline" asChild>
-                  <Link href="/dashboard/user/reports">
+                  <Link href="/dashboard/user/crop-recommendation">
                     <FileText className="mr-2 h-4 w-4" />
-                    View All Reports
+                    View All Recommendation
                   </Link>
                 </Button>
               </div>
@@ -309,7 +309,7 @@ export default function UserDashboard() {
                   icon: <Upload className="h-6 w-6" />,
                 },
                 {
-                  title: "Crop Recommendation",
+                  title: "Crop Planning",
                   href: "/dashboard/user/crop-recommendation",
                   icon: <FileText className="h-6 w-6" />,
                 },

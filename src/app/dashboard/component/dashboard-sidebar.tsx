@@ -65,14 +65,14 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
       icon: <FileText className="h-5 w-5" />,
     },
     {
-      title: "Market Insights",
-      href: "/dashboard/user/market-insights",
-      icon: <Send className="h-5 w-5" />,
-    },
-    {
       title: "Disease Detector",
       href: "/dashboard/user/disease-detector",
       icon: <Upload className="h-5 w-5" />,
+    },
+    {
+      title: "Market Insights",
+      href: "/dashboard/user/market-insights",
+      icon: <Send className="h-5 w-5" />,
     },
     {
       title: "Community",

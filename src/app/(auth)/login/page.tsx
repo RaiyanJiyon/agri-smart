@@ -44,7 +44,7 @@ const formSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get("redirect") || "/services";
+  const redirectPath = searchParams.get("redirect") || "/";
   const [showPassword, setShowPassword] = useState(false);
 
   // Define the form

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/shared/mode-toggle";
 import { LanguageToggle } from "@/components/shared/language-toggle";
-import { Menu, Leaf, User, Settings, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
+import { Menu, Leaf, User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   DropdownMenu,
@@ -17,13 +17,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
-import { toast } from "sonner"; // Import toast from sonner
+import { toast } from "sonner";
 
 const navigation = [
   { name: "Home", href: "/" },
+  { name: "Features", href: "/features" },
   { name: "Marketplace", href: "/marketplace" },
-  { name: "Services", href: "/services" },
-  { name: "Chatbot", href: "/chatbot" },
   { name: "Community", href: "/community" },
   { name: "Knowledge Hub", href: "/knowledge-hub" },
   { name: "About", href: "/about" },
@@ -209,11 +208,11 @@ export default function Navbar() {
                             Profile
                           </Link>
                           <Link
-                            href="/settings"
+                            href="/dashboard"
                             className="text-lg font-medium transition-colors hover:text-green-700 dark:hover:text-green-500 text-gray-600 dark:text-gray-300 flex items-center gap-2"
                           >
-                            <Settings className="h-4 w-4" />
-                            Settings
+                            <LayoutDashboard className="h-4 w-4" />
+                            Dashboard
                           </Link>
                         </>
                       )}

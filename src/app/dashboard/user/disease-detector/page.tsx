@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardWrapper } from "../../component/dashboard-wrapper";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 type UploadState = "idle" | "uploading" | "success" | "error";
 type DetectionResult = {
@@ -93,11 +94,10 @@ export default function DiseaseDetection() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [result, setResult] = useState<DetectionResult>(null);
   const [file, setFile] = useState<File | null>(null);
-  console.log(file);
   const [recentActivities, setRecentActivities] =
-    useState<
-      { id: string; file: string; result: DetectionResult; timestamp: Date }[]
-    >(mockRecentActivities);
+    useState(mockRecentActivities);
+
+  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -110,35 +110,82 @@ export default function DiseaseDetection() {
     setResult(null);
   };
 
-  const handleUpload = () => {
-    // Simulate analysis (replace with actual API call)
-    setTimeout(() => {
-      setResult({
-        disease: "Mock Disease",
-        confidence: 90.0,
-        description: "This is a simulated disease detection result.",
-        treatment: "Simulated treatment advice.",
-        prevention: ["Tip 1", "Tip 2", "Tip 3"],
-      });
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result?.toString().split(",")[1];
+        if (base64String) resolve(base64String);
+        else reject("Failed to convert file to base64.");
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const analyzeImageWithGemini = async (imageBase64: string) => {
+    setUploadState("uploading");
+    setResult(null);
+
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+      const result = await model.generateContent([
+        {
+          inlineData: {
+            mimeType: "image/jpeg",
+            data: imageBase64,
+          },
+        },
+        {
+          text: `You are an agricultural expert AI specialized in plant disease detection.
+Respond ONLY with JSON containing the following fields:
+{
+  "disease": "Name of disease",
+  "confidence": 92.5,
+  "description": "Detailed description...",
+  "treatment": "Treatment advice...",
+  "prevention": ["Tip 1", "Tip 2", "Tip 3"]
+}`,
+        },
+      ]);
+
+      const content = await result.response.text();
+
+      // Extract JSON
+      const jsonStart = content.indexOf("{");
+      const jsonEnd = content.lastIndexOf("}") + 1;
+      const jsonString = content.slice(jsonStart, jsonEnd);
+      const analysisResult = JSON.parse(jsonString);
+
+      setResult(analysisResult);
       setUploadState("success");
 
       // Add to recent activities
       setRecentActivities((prev) => [
-        ...prev,
         {
           id: Date.now().toString(),
           file: previewUrl || "/mock-images/default.jpg",
-          result: {
-            disease: "Mock Disease",
-            confidence: 90.0,
-            description: "This is a simulated disease detection result.",
-            treatment: "Simulated treatment advice.",
-            prevention: ["Tip 1", "Tip 2", "Tip 3"],
-          },
+          result: analysisResult,
           timestamp: new Date(),
         },
+        ...prev,
       ]);
-    }, 2000);
+    } catch (err) {
+      console.error("Error analyzing image:", err);
+      setUploadState("error");
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+    try {
+      const base64String = await fileToBase64(file);
+      await analyzeImageWithGemini(base64String);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setUploadState("error");
+    }
   };
 
   return (
