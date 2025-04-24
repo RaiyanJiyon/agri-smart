@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Star } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Card, CardContent, CardHeader } from "../ui/card";
 
 const Testimonials = () => {
   // Array of testimonial data
@@ -35,7 +35,7 @@ const Testimonials = () => {
   ];
 
   return (
-    <section className="py-20 bg-[hsl(var(--green-50))] dark:bg-[hsl(var(--green-950))]/10 px-4">
+    <section className="py-20 bg-[hsl(var(--green-50))] dark:bg-[hsl(var(--green-900))]/10 px-4">
       <div className="container mx-auto">
         {/* Section Title */}
         <div className="text-center mb-16">
@@ -43,19 +43,18 @@ const Testimonials = () => {
             What Farmers Are Saying
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Hear from farmers who have transformed their operations with
-            AgriSmart
+            Hear from farmers who have transformed their operations with AgriSmart
           </p>
         </div>
 
         {/* Testimonial Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map(({ quote, name, role, avatar, rating }, index) => (
-            <div
+            <Card
               key={index}
-              className="border-2 border-[hsl(var(--green-100))] dark:border-[hsl(var(--green-900))]/30 shadow-md bg-white dark:bg-gray-400 rounded-xl"
+              className="border-2 border-[hsl(var(--green-100))] dark:border-[hsl(var(--green-900))]/30 shadow-md hover:shadow-lg transition-all"
             >
-              <div className="pt-6 px-6">
+              <CardHeader>
                 {/* Rating Stars */}
                 <div className="flex mb-4">
                   {Array.from({ length: rating }).map((_, i) => (
@@ -72,31 +71,39 @@ const Testimonials = () => {
                   ))}
                 </div>
                 {/* Quote */}
-                <p className="text-gray-600 dark:text-white mb-6 italic">
+                <p className="text-gray-600 dark:text-gray-300 mb-6 italic">
                   &quot;{quote}&quot;
                 </p>
+              </CardHeader>
+              <CardContent>
                 {/* Author Info */}
-                <div className="flex items-center pb-6">
+                <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarFallback className="bg-[hsl(var(--green-100))] text-[hsl(var(--green-700))]">
+                    <AvatarFallback className="bg-[hsl(var(--green-100))] dark:bg-[hsl(var(--green-800))] text-[hsl(var(--green-700))] dark:text-[hsl(var(--green-300))]">
                       {avatar}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium">{name}</p>
-                    <p className="text-sm text-gray-500 dark:text-white">
+                    <p className="font-medium text-[hsl(var(--green-700))] dark:text-[hsl(var(--green-300))]">
+                      {name}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {role}
                     </p>
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* Call to Action */}
         <div className="text-center mt-12">
-          <Button asChild variant="outline" size="lg">
+          <Button 
+            asChild 
+            size="lg"
+            className="bg-[hsl(var(--green-600))] hover:bg-[hsl(var(--green-700))] text-white"
+          >
             <Link href="/community">
               Read More Success Stories
               <ArrowRight className="ml-2 h-4 w-4" />
