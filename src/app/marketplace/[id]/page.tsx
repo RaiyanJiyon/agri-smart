@@ -21,6 +21,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductCard } from "../components/product-card";
 import Image from "next/image";
 import { Product } from "@/lib/types";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useSession } from "next-auth/react";
 
 export default function ProductDetailsPage({
   params,
@@ -35,6 +42,8 @@ export default function ProductDetailsPage({
   // Unwrap the params Promise using React.use()
   const resolveParams = use(params);
   const { id } = resolveParams;
+
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -218,20 +227,46 @@ export default function ProductDetailsPage({
           <Separator />
 
           <div className="space-y-4">
-            <Button
-              className="w-full bg-green-600 hover:bg-green-700"
-              disabled={!product.isAvailable}
-            >
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              Add to Cart
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              disabled={!product.isAvailable}
-            >
-              Buy Now
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      className="w-full bg-green-600 hover:bg-green-700"
+                      disabled={!product.isAvailable || !session?.user}
+                    >
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      Add to Cart
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!session && (
+                  <TooltipContent>
+                    <p>You need to sign in to add to cart</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      disabled={!product.isAvailable || !session?.user}
+                    >
+                      Buy Now
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!session && (
+                  <TooltipContent>
+                    <p>You need to sign in to buy product</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <Card>
