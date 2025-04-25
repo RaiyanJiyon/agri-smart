@@ -1,5 +1,5 @@
 import { connectToDB } from "@/lib/mongoose/connect";
-import { Product } from "@/models/Product";
+import { Product } from "@/models/product.model";
 import { NextRequest, NextResponse } from "next/server";
 
 // Products POST API

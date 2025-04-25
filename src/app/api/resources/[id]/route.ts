@@ -1,5 +1,5 @@
 import { connectToDB } from "@/lib/mongoose/connect";
-import Resource from "@/models/Resource";
+import Resource from "@/models/resource.model";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

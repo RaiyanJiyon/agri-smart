@@ -1,7 +1,7 @@
 // app/api/users/route.ts
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import User from "@/models/User";
+import User from "@/models/user.model";
 import { connectToDB } from "@/lib/mongoose/connect";
 
 export async function POST(req: Request) {
