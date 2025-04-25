@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Star } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Product } from "@/data/products";
 import Image from "next/image";
+import { Product } from "@/lib/types";
 
 interface ProductCardProps {
   product: Product;
@@ -15,7 +15,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const {
-    productId,
+    _id,
     name,
     category,
     price,
@@ -51,7 +51,7 @@ export function ProductCard({ product }: ProductCardProps) {
               src={imageUrl || "/placeholder.svg"}
               alt={name}
               width={500}
-              height={192}
+              height={500}
               className="w-full h-full object-cover transition-transform hover:scale-105"
             />
           </div>
@@ -87,7 +87,7 @@ export function ProductCard({ product }: ProductCardProps) {
             className="w-full bg-green-600 hover:bg-green-700"
             disabled={!isAvailable}
           >
-            <Link href={`/marketplace/${productId}`}>View Details</Link>
+            <Link href={`/marketplace/${_id}`}>View Details</Link>
           </Button>
         </CardFooter>
       </Card>

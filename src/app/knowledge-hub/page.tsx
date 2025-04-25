@@ -13,7 +13,6 @@ import { ResourceCard } from "./components/resource-card";
 import Loading from "../loading";
 import { Resource } from "@/lib/types";
 
-
 export default function KnowledgeHubPage() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,8 +24,8 @@ export default function KnowledgeHubPage() {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        setLoading(true)
-        const response = await fetch('/api/resources');
+        setLoading(true);
+        const response = await fetch("/api/resources");
         if (!response.ok) {
           throw new Error("Failed to fetch resources");
         }
@@ -37,17 +36,17 @@ export default function KnowledgeHubPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
     fetchResources();
-  }, [])
+  }, []);
 
   if (loading) {
-    return <Loading />
+    return <Loading />;
   }
 
   const featuredResources = resources.filter((resource) => resource?.featured);
   const popularResources = resources.filter((resource) => resource?.popular);
-  
+
   const filteredResources = resources.filter((resource) => {
     const matchesSearch =
       searchTerm === "" ||

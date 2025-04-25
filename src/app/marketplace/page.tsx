@@ -1,16 +1,20 @@
 "use client";
 
 import { Pagination } from "@/app/marketplace/components/pagination";
-import { Product, products } from "@/data/products";
 import { useState, useEffect } from "react";
 import { FilterBar } from "./components/filter-bar";
 import { ProductCard } from "./components/product-card";
+import { Product } from "@/lib/types";
+import Loading from "../loading";
 
 export default function MarketplacePage() {
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 20000]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,11 +22,34 @@ export default function MarketplacePage() {
   const [paginatedProducts, setPaginatedProducts] = useState<Product[]>([]);
   const [totalPages, setTotalPages] = useState(1);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch("/api/products");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch products data");
+        }
+
+        const data = await response.json();
+        setProducts(data.data);
+        setFilteredProducts(data.data);
+      } catch (error) {
+        setError("Failed to load products. Please try again later.");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   // Apply filters
   useEffect(() => {
     let result = [...products];
 
-    // Apply search filter
     if (searchTerm) {
       result = result.filter(
         (product) =>
@@ -36,22 +63,20 @@ export default function MarketplacePage() {
       );
     }
 
-    // Apply category filter
     if (selectedCategory !== "All") {
       result = result.filter(
         (product) => product.category === selectedCategory
       );
     }
 
-    // Apply price range filter
     result = result.filter(
       (product) =>
         product.price >= priceRange[0] && product.price <= priceRange[1]
     );
 
     setFilteredProducts(result);
-    setCurrentPage(1); // Reset to first page when filters change
-  }, [searchTerm, selectedCategory, priceRange]);
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory, priceRange, products]);
 
   // Handle pagination
   useEffect(() => {
@@ -62,6 +87,7 @@ export default function MarketplacePage() {
     const endIndex = startIndex + itemsPerPage;
     setPaginatedProducts(filteredProducts.slice(startIndex, endIndex));
   }, [filteredProducts, currentPage, itemsPerPage]);
+  
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -82,7 +108,11 @@ export default function MarketplacePage() {
         priceRange={priceRange}
       />
 
-      {filteredProducts.length === 0 ? (
+      {error ? (
+        <div className="text-center py-12 text-red-500">{error}</div>
+      ) : loading ? (
+        <Loading />
+      ) : filteredProducts.length === 0 ? (
         <div className="text-center py-12">
           <h2 className="text-xl font-semibold mb-2">No products found</h2>
           <p className="text-muted-foreground">
@@ -93,7 +123,10 @@ export default function MarketplacePage() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {paginatedProducts.map((product) => (
-              <ProductCard key={product.productId} product={product} />
+              <ProductCard
+                key={product._id}
+                product={product}
+              />
             ))}
           </div>
 

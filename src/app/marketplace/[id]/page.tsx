@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { products, type Product } from "../../../data/products";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -21,29 +20,48 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductCard } from "../components/product-card";
 import Image from "next/image";
+import { Product } from "@/lib/types";
 
 export default function ProductDetailsPage({
   params,
 }: {
-  params: Promise<{ productId: string }>;
+  params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Unwrap the params Promise using React.use()
+  const resolveParams = use(params);
+  const { id } = resolveParams;
+
   useEffect(() => {
-    async function fetchProduct() {
-      // Unwrap the `params` object using `React.use()`
-      const { productId } = await params;
+    const fetchProduct = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/products/${id}`);
 
-      // Simulate an API call to find the product
-      const foundProduct = products.find((p) => p.productId === productId);
-      setProduct(foundProduct || null);
-      setLoading(false);
-    }
+        if (!response.ok) {
+          throw new Error("Failed to fetch product data");
+        }
 
+        const data = await response.json();
+        setProduct(data);
+
+        const relatedResponse = await fetch("/api/products");
+        if (relatedResponse.ok) {
+          const allProducts = await relatedResponse.json();
+          setSimilarProducts(allProducts.data);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchProduct();
-  }, [params]);
+  }, [id]);
 
   if (loading) {
     return (
@@ -315,21 +333,21 @@ export default function ProductDetailsPage({
         </Tabs>
       </div>
 
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6">Similar Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products
-            .filter(
-              (p) =>
-                p.category === product.category &&
-                p.productId !== product.productId
-            )
-            .slice(0, 4)
-            .map((p) => (
-              <ProductCard key={p.productId} product={p} />
-            ))}
+      {similarProducts.length !== 0 && (
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">Similar Products</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {similarProducts
+              .filter(
+                (p) => p.category === product.category && p._id !== product._id
+              )
+              .slice(0, 4)
+              .map((p) => (
+                <ProductCard key={p._id} product={p} />
+              ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

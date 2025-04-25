@@ -18,7 +18,7 @@ export function LanguageToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setLanguage("english")}>English</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setLanguage("hindi")}>हिन्दी (Hindi)</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setLanguage("hindi")}>বাংলা (Bengali)</DropdownMenuItem>
         <DropdownMenuItem onClick={() => setLanguage("spanish")}>Español (Spanish)</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

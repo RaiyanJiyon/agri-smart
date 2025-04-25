@@ -35,6 +35,28 @@ export interface ProcessedForecast {
   description: string;
 }
 
+// Define the type for a product
+export type Product = {
+  _id: string;
+  name: string;
+  category: string;
+  description: string;
+  price: number;
+  unit: string;
+  stockQuantity: number;
+  sellerId: string;
+  location: string;
+  imageUrl: string;
+  isAvailable: boolean;
+  brand: string;
+  rating: number;
+  discount: number;
+  tags: string[];
+  dateAdded: string;
+  expirationDate?: string;
+  status: string
+};
+
 // Define the type for a resource
 export interface Resource {
   _id: string;
