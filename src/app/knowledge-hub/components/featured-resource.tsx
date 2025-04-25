@@ -1,6 +1,6 @@
-import type { Resource } from "../data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Resource } from "@/lib/types";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +11,7 @@ interface FeaturedResourceProps {
 
 export function FeaturedResource({ resource }: FeaturedResourceProps) {
   const {
+    _id,
     title,
     description,
     category,
@@ -81,7 +82,7 @@ export function FeaturedResource({ resource }: FeaturedResourceProps) {
           </div>
         )}
         <Button asChild className="w-fit bg-green-600 hover:bg-green-700">
-          <Link href={`knowledge-hub/${resource.id}`}>
+          <Link href={`knowledge-hub/${_id}`}>
             Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>

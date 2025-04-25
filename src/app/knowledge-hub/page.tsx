@@ -1,25 +1,53 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, BookOpen, Lightbulb, Calendar } from "lucide-react";
-import { categories, ResourceCategory, resources } from "./data";
+import { categories, ResourceCategory } from "./data";
 import { FeaturedResource } from "./components/featured-resource";
 import { CategoryCard } from "./components/category-card";
 import { ResourceCard } from "./components/resource-card";
+import Loading from "../loading";
+import { Resource } from "@/lib/types";
+
 
 export default function KnowledgeHubPage() {
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<
     ResourceCategory | "all"
   >("all");
 
-  const featuredResources = resources.filter((resource) => resource.featured);
-  const popularResources = resources.filter((resource) => resource.popular);
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/resources');
+        if (!response.ok) {
+          throw new Error("Failed to fetch resources");
+        }
+        const data = await response.json();
+        setResources(data.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchResources();
+  }, [])
 
+  if (loading) {
+    return <Loading />
+  }
+
+  const featuredResources = resources.filter((resource) => resource?.featured);
+  const popularResources = resources.filter((resource) => resource?.popular);
+  
   const filteredResources = resources.filter((resource) => {
     const matchesSearch =
       searchTerm === "" ||
@@ -72,7 +100,7 @@ export default function KnowledgeHubPage() {
       {/* Featured Resource */}
       {featuredResources.length > 0 && (
         <div className="mb-12">
-          <FeaturedResource resource={featuredResources[0]} />
+          <FeaturedResource resource={featuredResources[2]} />
         </div>
       )}
 
@@ -103,7 +131,7 @@ export default function KnowledgeHubPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {popularResources.slice(0, 4).map((resource) => (
-              <ResourceCard key={resource.id} resource={resource} />
+              <ResourceCard key={resource._id} resource={resource} />
             ))}
           </div>
         </div>
@@ -164,7 +192,7 @@ export default function KnowledgeHubPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredResources.map((resource) => (
-              <ResourceCard key={resource.id} resource={resource} />
+              <ResourceCard key={resource._id} resource={resource} />
             ))}
           </div>
         )}

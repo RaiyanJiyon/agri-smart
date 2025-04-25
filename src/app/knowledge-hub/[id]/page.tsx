@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { resources, categories, type Resource } from "../data";
 import { ResourceCard } from "../components/resource-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +23,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { Resource } from "@/lib/types";
+import { categories } from "../data"; // Import the categories from your data file
 
 export default function ResourceDetailsPage({
   params,
@@ -35,33 +36,52 @@ export default function ResourceDetailsPage({
   const [relatedResources, setRelatedResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Unwrap the params Promise using React.use()
+  const resolveParams = use(params);
+  const { id } = resolveParams;
+
   useEffect(() => {
-    async function fetchResource() {
-      // Unwrap the `params` object using `await`
-      const { id } = await params;
+    const fetchResourceAndRelated = async () => {
+      try {
+        // Fetch the main resource
+        const response = await fetch(`/api/resources/${id}`);
 
-      // Simulate an API call to find the resource
-      const foundResource = resources.find((r) => r.id === id);
-      setResource(foundResource || null);
+        if (!response.ok) {
+          throw new Error("Failed to fetch resource data");
+        }
 
-      if (foundResource) {
-        // Find related resources (same category or shared tags)
-        const related = resources
-          .filter(
-            (r) =>
-              r.id !== foundResource.id &&
-              (r.category === foundResource.category ||
-                r.tags.some((tag) => foundResource.tags.includes(tag)))
-          )
-          .slice(0, 3);
-        setRelatedResources(related);
+        const data = await response.json();
+        setResource(data);
+
+        // Fetch related resources
+        if (data) {
+          // Fetch resources with the same category or tags
+          const relatedResponse = await fetch("/api/resources");
+          if (relatedResponse.ok) {
+            const allResources = await relatedResponse.json();
+            
+            // Filter for related resources
+            const related = allResources.data
+              .filter(
+                (r: Resource) =>
+                  r._id !== id &&
+                  (r.category === data.category ||
+                    r.tags.some((tag: string) => data.tags.includes(tag)))
+              )
+              .slice(0, 3);
+
+            setRelatedResources(related);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching resource:", error);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setLoading(false);
-    }
-
-    fetchResource();
-  }, [params]);
+    fetchResourceAndRelated();
+  }, [id]);
 
   if (loading) {
     return (
@@ -335,7 +355,7 @@ export default function ResourceDetailsPage({
               <h3 className="text-xl font-bold mb-4">Related Resources</h3>
               <div className="space-y-4">
                 {relatedResources.map((related) => (
-                  <ResourceCard key={related.id} resource={related} />
+                  <ResourceCard key={related._id} resource={related} />
                 ))}
               </div>
             </div>
@@ -363,20 +383,20 @@ export default function ResourceDetailsPage({
 
       <Separator className="my-12" />
 
-      {/* More Resources Section */}
-      <div>
-        <h2 className="text-2xl font-bold mb-6">
-          More Resources You Might Like
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {resources
-            .filter((r) => r.id !== resource.id)
-            .slice(0, 4)
-            .map((r) => (
-              <ResourceCard key={r.id} resource={r} />
-            ))}
+      {/* You should fetch more resources from your API instead */}
+      {relatedResources.length > 0 && (
+        <div>
+          <h2 className="text-2xl font-bold mb-6">
+            More Resources You Might Like
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {relatedResources.length > 0 &&
+              relatedResources.map((r) => (
+                <ResourceCard key={r._id} resource={r} />
+              ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
