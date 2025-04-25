@@ -18,7 +18,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { categories } from "@/data/products";
 
 interface FilterBarProps {
   onSearch: (term: string) => void;
@@ -49,6 +48,15 @@ export function FilterBar({
       handleSearch();
     }
   };
+
+  const categories = [
+    "All",
+    "Seeds",
+    "Fertilizers",
+    "Tools",
+    "Pesticides",
+    "Equipment"
+  ];
 
   const handleApplyFilters = () => {
     onCategoryChange(tempCategory);
