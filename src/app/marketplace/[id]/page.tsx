@@ -28,6 +28,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 export default function ProductDetailsPage({
   params,
@@ -44,6 +45,7 @@ export default function ProductDetailsPage({
   const { id } = resolveParams;
 
   const { data: session } = useSession();
+  const userId = session?.user.id;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -71,6 +73,28 @@ export default function ProductDetailsPage({
     };
     fetchProduct();
   }, [id]);
+
+  const handleAddToCart = async (productId: string, productName: string, productImage: string) => {
+    try {
+      const response = await fetch("/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId, productName, productImage, userId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add to cart");
+      }
+
+      // Show success message
+      toast.success("Product added to cart");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add to cart");
+    }
+  };
 
   if (loading) {
     return (
@@ -234,6 +258,7 @@ export default function ProductDetailsPage({
                     <Button
                       className="w-full bg-green-600 hover:bg-green-700"
                       disabled={!product.isAvailable || !session?.user}
+                      onClick={() => handleAddToCart(product._id, product.name, product.imageUrl)}
                     >
                       <ShoppingCart className="mr-2 h-4 w-4" />
                       Add to Cart
