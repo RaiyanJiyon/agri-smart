@@ -25,14 +25,15 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ModeToggle } from "@/components/shared/mode-toggle";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 interface DashboardSidebarProps {
   userRole: "admin" | "user";
 }
 
 export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
-  const {data: session} = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -152,6 +153,13 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
 
   const navItems = userRole === "admin" ? adminNavItems : userNavItems;
 
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/login" });
+    toast("You have been logged out successfully.", {
+      description: "Redirecting to the sign-in page...",
+    });
+  };
+
   return (
     <>
       {/* Mobile hamburger button */}
@@ -160,7 +168,11 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="fixed left-4 top-4 z-50 rounded-md p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
         >
-          {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {sidebarOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
           <span className="sr-only">Toggle sidebar</span>
         </button>
       )}
@@ -182,8 +194,8 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
               ? "w-64 translate-x-0"
               : "-translate-x-full"
             : collapsed
-              ? "w-16"
-              : "w-64"
+            ? "w-16"
+            : "w-64"
         )}
       >
         <div className="flex h-full flex-col">
@@ -294,12 +306,10 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
               {(!collapsed || isMobile) && (
                 <div className="flex-1 overflow-hidden">
                   <p className="text-sm font-medium leading-none">
-                    {userRole === "admin" ? `${session?.user.name}` : `${session?.user.name}`}
+                    {status === "authenticated" && `${session?.user.name}`}
                   </p>
                   <p className="text-xs text-muted-foreground truncate">
-                    {userRole === "admin"
-                      ? `${session?.user.role}`
-                      : `${session?.user.role}`}
+                    {status === "authenticated" && `${session?.user.role}`}
                   </p>
                 </div>
               )}
@@ -307,6 +317,7 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
             </div>
 
             <Button
+            onClick={handleSignOut}
               variant="outline"
               size={collapsed && !isMobile ? "icon" : "default"}
               className={cn(
@@ -314,7 +325,9 @@ export function DashboardSidebar({ userRole }: DashboardSidebarProps) {
                 collapsed && !isMobile && "h-10 w-10"
               )}
             >
-              <LogOut className={cn("h-4 w-4", (!collapsed || isMobile) && "mr-2")} />
+              <LogOut
+                className={cn("h-4 w-4", (!collapsed || isMobile) && "mr-2")}
+              />
               {(!collapsed || isMobile) && <span>Log out</span>}
             </Button>
           </div>
