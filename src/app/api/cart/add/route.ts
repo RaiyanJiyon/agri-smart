@@ -1,5 +1,5 @@
 import { connectToDB } from "@/lib/mongoose/connect";
-import cartModel from "@/models/cart.model";
+import Cart from "@/models/cart.model";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const { productId, productName, productImage, userId } = await request.json();
 
     // Check if the cart item already exists
-    const existingItem = await cartModel.findOne({ productId, userId });
+    const existingItem = await Cart.findOne({ productId, userId });
 
     if (existingItem) {
       return NextResponse.json(
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new cart item
-    const cartItem = await cartModel.create({ productId, productName, productImage, userId });
+    const cartItem = await Cart.create({ productId, productName, productImage, userId });
 
     return NextResponse.json(cartItem, { status: 201 });
   } catch (error) {

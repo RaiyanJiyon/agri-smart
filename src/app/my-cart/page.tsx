@@ -52,6 +52,33 @@ export default function CartPage() {
     }
   }, [userId]);
 
+  const handleDeleteCart = async (cartId: string, productName: string) => {
+    try {
+      const response = await fetch(`/api/cart/${cartId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to remove item from cart");
+      }
+
+      // Update local state to remove the deleted item
+      setCarts((prevCarts) => prevCarts.filter((cart) => cart._id !== cartId));
+
+      toast.success("Item removed successfully", {
+        description: `Removed: ${productName}`,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to remove item", {
+        description: "Please try again later",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 flex justify-center">
@@ -120,12 +147,9 @@ export default function CartPage() {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => {
-                          toast("Remove clicked", {
-                            description: `Product: ${item.productName}`,
-                          });
-                          // TODO: Add remove logic here
-                        }}
+                        onClick={() =>
+                          handleDeleteCart(item._id, item.productName)
+                        }
                       >
                         Remove
                       </Button>

@@ -6,8 +6,15 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/shared/mode-toggle";
-import { LanguageToggle } from "@/components/shared/language-toggle";
-import { Menu, Leaf, User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
+import {
+  Menu,
+  Leaf,
+  User,
+  LogOut,
+  ChevronDown,
+  LayoutDashboard,
+  ShoppingCart,
+} from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   DropdownMenu,
@@ -32,6 +39,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,6 +49,21 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const fetchCartCount = async () => {
+      if (!session?.user?.id) return;
+      try {
+        const res = await fetch(`/api/cart/${session.user.id}`);
+        const data = await res.json();
+        setCartCount(data.length || 0);
+      } catch (error) {
+        console.error("Failed to fetch cart count:", error);
+      }
+    };
+
+    fetchCartCount();
+  }, [session?.user?.id]);
+
   // Handle sign-out with redirection and toast
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/login" }); // Redirect to sign-in page
@@ -49,7 +72,7 @@ export default function Navbar() {
     });
   };
 
-  if (pathname.includes('/dashboard')) {
+  if (pathname.includes("/dashboard")) {
     return;
   }
 
@@ -92,7 +115,24 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             <div className="hidden lg:flex items-center gap-2">
               <ModeToggle />
-              <LanguageToggle />
+              {session?.user && (
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="relative flex items-center gap-2"
+                >
+                  <Link href="/my-cart">
+                    <ShoppingCart className="h-4 w-4" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Link>
+                </Button>
+              )}
+
               {session?.user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -218,7 +258,21 @@ export default function Navbar() {
                       )}
                     </nav>
                     <div className="mt-auto flex flex-col gap-4 py-4">
-                      <LanguageToggle />
+                      {session?.user && (
+                        <Link
+                          href="/my-cart"
+                          className="text-lg font-medium transition-colors hover:text-green-700 dark:hover:text-green-500 text-gray-600 dark:text-gray-300 flex items-center gap-2"
+                        >
+                          <ShoppingCart className="h-4 w-4" />
+                          My Cart
+                          {cartCount > 0 && (
+                            <span className="ml-auto bg-green-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                              {cartCount}
+                            </span>
+                          )}
+                        </Link>
+                      )}
+
                       {session?.user ? (
                         <Button
                           onClick={handleSignOut} // Call the custom sign-out handler
