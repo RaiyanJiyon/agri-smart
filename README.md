@@ -172,7 +172,7 @@ FACEBOOK_CLIENT_SECRET=your_facebook_client_secret
 
 ## 🚀 Usage<a id="usage"></a>
 
-1. Register or log in as a farmer
+1. Sign-up or log in as a farmer
 2. Get crop suggestions based on your inputs
 3. Upload images to detect plant diseases
 4. Check real-time weather and plan irrigation
@@ -204,7 +204,7 @@ Session handling is secured with JWT.
 | `/dashboard/user/ai-assistant`               | Chatbot interface               |
 | `/dashboard/user/market-insights`             | Market trend insights           |
 | `/community`              | Community discussions and Q\&A  |
-| `/login`, `/register` | Auth pages                      |
+| `/login`, `/sign-up` | Auth pages                      |
 
 ---
 

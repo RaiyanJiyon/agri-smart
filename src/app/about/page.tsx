@@ -1,8 +1,9 @@
+export const dynamic = "force-static"
+
 import About from "./components/about";
 import ContactUs from "./components/contact-us";
 import OurPartners from "./components/our-partners";
 import OurTeam from "./components/our-team";
-
 
 export default function AboutPage() {
   return (
