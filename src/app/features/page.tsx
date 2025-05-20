@@ -1,3 +1,5 @@
+export const dynamic = "force-static"
+
 import type React from "react";
 import FeaturesHero from "./components/features-hero";
 import FeaturesStats from "./components/features-stats";

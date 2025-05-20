@@ -156,7 +156,7 @@ NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key
 NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
 
 # Auth Configuration
-NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 NEXTAUTH_SECRET=your_secret_key
 
 # Google OAuth
@@ -219,7 +219,7 @@ Session handling is secured with JWT.
 
 ## 🌍 Live Demo & Repository<a id="live-demo--repository"></a>
 
-* **Live Site:** [AgriSmart Platform](https://agri-smart-one.vercel.app/) *(placeholder)*
+* **Live Site:** [AgriSmart Platform](https://agri-smart-one.vercel.app/)
 * **GitHub Repository:** [GitHub](https://github.com/RaiyanJiyon/agri-smart)
 
 ---

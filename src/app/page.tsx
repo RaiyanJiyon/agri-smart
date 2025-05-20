@@ -1,3 +1,5 @@
+export const dynamic = "force-static"
+
 import CallToAction from "@/components/home/call-to-action";
 import FAQ from "@/components/home/faq";
 import Featured from "@/components/home/featured";

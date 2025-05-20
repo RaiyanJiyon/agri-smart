@@ -1,71 +1,31 @@
-"use client";
+export const dynamic = "force-dynamic";
 
-import type React from "react";
-import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, BookOpen, Lightbulb, Calendar } from "lucide-react";
-import { categories, ResourceCategory } from "./data";
+import { BookOpen, Lightbulb, Calendar } from "lucide-react";
+import { categories } from "./data";
 import { FeaturedResource } from "./components/featured-resource";
 import { CategoryCard } from "./components/category-card";
 import { ResourceCard } from "./components/resource-card";
-import Loading from "../loading";
 import { Resource } from "@/lib/types";
+import { SearchAndFilterClient } from "./components/search-and-filter";
 
-export default function KnowledgeHubPage() {
-  const [resources, setResources] = useState<Resource[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState<
-    ResourceCategory | "all"
-  >("all");
-
-  useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/resources");
-        if (!response.ok) {
-          throw new Error("Failed to fetch resources");
-        }
-        const data = await response.json();
-        setResources(data.data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchResources();
-  }, []);
-
-  if (loading) {
-    return <Loading />;
-  }
-
-  const featuredResources = resources.filter((resource) => resource?.featured);
-  const popularResources = resources.filter((resource) => resource?.popular);
-
-  const filteredResources = resources.filter((resource) => {
-    const matchesSearch =
-      searchTerm === "" ||
-      resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      resource.tags.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-    const matchesCategory =
-      activeCategory === "all" || resource.category === activeCategory;
-
-    return matchesSearch && matchesCategory;
+// Server-side fetch
+async function getResources(): Promise<Resource[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/resources`, {
+    cache: "no-store",
   });
+  if (!res.ok) {
+    throw new Error("Failed to fetch resources");
+  }
+  const data = await res.json();
+  return data.data;
+}
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Search is already handled by the filter above
-  };
+export default async function KnowledgeHubPage() {
+  const resources = await getResources();
+
+  const featuredResources = resources.filter((r) => r?.featured);
+  const popularResources = resources.filter((r) => r?.popular);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -76,24 +36,6 @@ export default function KnowledgeHubPage() {
         <p className="text-gray-600 dark:text-gray-300">
           Educational resources to help you improve your farming practices
         </p>
-      </div>
-
-      {/* Search Bar */}
-      <div className="mb-8">
-        <form onSubmit={handleSearch} className="flex gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search for farming resources..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Button type="submit" className="bg-green-600 hover:bg-green-700">
-            Search
-          </Button>
-        </form>
       </div>
 
       {/* Featured Resource */}
@@ -160,42 +102,8 @@ export default function KnowledgeHubPage() {
         </div>
       </div>
 
-      {/* All Resources with Tabs */}
-      <div>
-        <h2 className="text-2xl font-bold mb-6">All Resources</h2>
-
-        <Tabs
-          defaultValue="all"
-          className="mb-6"
-          onValueChange={(value) =>
-            setActiveCategory(value as ResourceCategory | "all")
-          }
-        >
-          <TabsList className="flex flex-wrap h-auto">
-            <TabsTrigger value="all">All</TabsTrigger>
-            {categories.map((category) => (
-              <TabsTrigger key={category.id} value={category.id}>
-                {category.name}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-
-        {filteredResources.length === 0 ? (
-          <div className="text-center py-12">
-            <h3 className="text-xl font-semibold mb-2">No resources found</h3>
-            <p className="text-muted-foreground">
-              Try adjusting your search or browse different categories
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredResources.map((resource) => (
-              <ResourceCard key={resource._id} resource={resource} />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Search UI and Filter Tabs should be extracted to client components if needed */}
+      <SearchAndFilterClient resources={resources} />
     </div>
   );
 }
