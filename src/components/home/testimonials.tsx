@@ -1,9 +1,11 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { ArrowRight, Star } from "lucide-react";
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 const Testimonials = () => {
   // Array of testimonial data
@@ -13,7 +15,7 @@ const Testimonials = () => {
         "AgriSmart's crop recommendations increased my wheat yield by 30% while using less water and fertilizer. The ROI has been incredible.",
       name: "John Deere",
       role: "Wheat Farmer, Kansas",
-      avatar: "JD",
+      imageSrc: "/farmers/farmer-1.jpg",
       rating: 5,
     },
     {
@@ -21,7 +23,7 @@ const Testimonials = () => {
         "The disease detection feature saved my tomato crop. I uploaded a photo of affected leaves and got an immediate diagnosis and treatment plan.",
       name: "Maria Rodriguez",
       role: "Organic Farmer, California",
-      avatar: "MR",
+      imageSrc: "/farmers/farmer-2.jpg",
       rating: 5,
     },
     {
@@ -29,71 +31,96 @@ const Testimonials = () => {
         "The weather forecasting is incredibly accurate. I've been able to plan my planting and harvesting with confidence, even in unpredictable seasons.",
       name: "Raj Patel",
       role: "Rice Farmer, India",
-      avatar: "RP",
+      imageSrc: "/farmers/farmer-3.jpg",
       rating: 4,
     },
   ];
 
+  const [index, setIndex] = useState(0);
+  const total = testimonials.length;
+  const current = testimonials[index];
+
+  const prev = () => setIndex((i) => (i - 1 + total) % total);
+  const next = () => setIndex((i) => (i + 1) % total);
+
   return (
-    <section className="py-20 bg-[hsl(var(--green-50))] dark:bg-[hsl(var(--green-900))]/10 px-4">
-      <div className="container mx-auto">
-        {/* Section Title */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[hsl(var(--green-700))] dark:text-[hsl(var(--green-500))]">
-            What Farmers Are Saying
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Hear from farmers who have transformed their operations with AgriSmart
+    <section className="relative px-4 overflow-hidden min-h-screen flex items-center">
+      {/* Background image with overlay to match the provided style */}
+      <div
+        className="absolute inset-0 h-full w-full bg-cover bg-center opacity-40"
+        style={{ backgroundImage: "url(/about.jpg)" }}
+        aria-hidden
+      />
+      <div className="absolute inset-0 h-full w-full bg-[hsl(var(--green-600))] opacity-75" aria-hidden />
+
+      <div className="relative container mx-auto text-center text-white">
+        {/* Single testimonial view */}
+        <div className="max-w-3xl mx-auto">
+          {/* Avatar */}
+          <div className="flex justify-center mb-6">
+            <div className="h-16 w-16 rounded-full ring-4 ring-white/20 overflow-hidden relative">
+              <Image
+                src={current.imageSrc}
+                alt={current.name}
+                fill
+                sizes="64px"
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+
+          {/* Quote */}
+          <p className="text-lg md:text-xl leading-8 md:leading-9 opacity-95">
+            {"\u201C"}{current.quote}{"\u201D"}
           </p>
+
+          {/* Name and role */}
+          <div className="mt-6">
+            <div className="text-xl md:text-2xl font-semibold">{current.name}</div>
+            <div className="opacity-90">{current.role}</div>
+          </div>
+
+          {/* Stars */}
+          <div className="mt-4 flex justify-center">
+            {Array.from({ length: current.rating }).map((_, i) => (
+              <Star key={`full-${i}`} className="h-5 w-5 text-yellow-300 fill-yellow-300" />
+            ))}
+            {Array.from({ length: 5 - current.rating }).map((_, i) => (
+              <Star key={`empty-${i}`} className="h-5 w-5 text-white/40" />
+            ))}
+          </div>
         </div>
 
-        {/* Testimonial Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map(({ quote, name, role, avatar, rating }, index) => (
-            <Card
-              key={index}
-              className="border-2 border-[hsl(var(--green-100))] dark:border-[hsl(var(--green-900))]/30 shadow-md hover:shadow-lg transition-all"
-            >
-              <CardHeader>
-                {/* Rating Stars */}
-                <div className="flex mb-4">
-                  {Array.from({ length: rating }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-5 w-5 text-yellow-500 fill-yellow-500"
-                    />
-                  ))}
-                  {Array.from({ length: 5 - rating }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-5 w-5 text-gray-300 dark:text-gray-600"
-                    />
-                  ))}
-                </div>
-                {/* Quote */}
-                <p className="text-gray-600 dark:text-gray-300 mb-6 italic">
-                  &quot;{quote}&quot;
-                </p>
-              </CardHeader>
-              <CardContent>
-                {/* Author Info */}
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <AvatarFallback className="bg-[hsl(var(--green-100))] dark:bg-[hsl(var(--green-800))] text-[hsl(var(--green-700))] dark:text-[hsl(var(--green-300))]">
-                      {avatar}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium text-[hsl(var(--green-700))] dark:text-[hsl(var(--green-300))]">
-                      {name}
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {role}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Prev/Next Controls */}
+        <button
+          type="button"
+          onClick={prev}
+          aria-label="Previous testimonial"
+          className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 grid place-items-center h-10 w-10 rounded-full bg-white text-[hsl(var(--green-700))] hover:bg-white/90 shadow"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          onClick={next}
+          aria-label="Next testimonial"
+          className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 grid place-items-center h-10 w-10 rounded-full bg-white text-[hsl(var(--green-700))] hover:bg-white/90 shadow"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+
+        {/* Dots */}
+        <div className="mt-10 flex items-center justify-center gap-2">
+          {testimonials.map((_, i) => (
+            <button
+              key={i}
+              aria-label={`Go to testimonial ${i + 1}`}
+              onClick={() => setIndex(i)}
+              className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                i === index ? "bg-white" : "bg-white/40 hover:bg-white/60"
+              }`}
+            />
           ))}
         </div>
 
@@ -102,7 +129,7 @@ const Testimonials = () => {
           <Button 
             asChild 
             size="lg"
-            className="bg-[hsl(var(--green-600))] hover:bg-[hsl(var(--green-700))] text-white"
+            className="bg-[hsl(var(--green-600))] hover:bg-[hsl(var(--green-700))] text-white py-6"
           >
             <Link href="/community">
               Read More Success Stories
