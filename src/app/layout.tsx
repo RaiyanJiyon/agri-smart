@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import Navbar from "@/components/layout/navbar";
@@ -8,7 +8,11 @@ import Footer from "@/components/layout/footer";
 import { Toaster } from "sonner";
 import AuthProvider from "@/services/auth-provider";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "AgriSmart - AI-Powered Farming Assistant",
@@ -23,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={poppins.className}>
         {/* Wrap the entire app with LanguageProvider */}
         <LanguageProvider>
           <ThemeProvider
