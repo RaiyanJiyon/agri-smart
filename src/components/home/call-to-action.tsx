@@ -5,8 +5,16 @@ import { CheckCircle2 } from "lucide-react";
 
 const CallToAction = () => {
   return (
-    <section className="py-20 bg-[hsl(var(--green-600))] text-white px-4">
-      <div className="container mx-auto">
+    <section className="relative overflow-hidden px-4 py-20 text-white">
+      {/* Background image and overlay to match testimonial styling */}
+      <div
+        className="absolute inset-0 h-full w-full bg-cover bg-center opacity-40"
+        style={{ backgroundImage: "url(/slider-3.jpg)" }}
+        aria-hidden
+      />
+      <div className="absolute inset-0 h-full w-full bg-[hsl(var(--green-600))] opacity-75" aria-hidden />
+
+      <div className="relative container mx-auto">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Ready to Transform Your Farming?
