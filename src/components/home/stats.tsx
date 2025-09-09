@@ -42,7 +42,11 @@ const Stats = () => {
                   duration={5}
                   separator=","
                   suffix={suffix}
-                />
+                  enableScrollSpy
+                  scrollSpyOnce
+                >
+                  {({ countUpRef }) => <span ref={countUpRef} />}
+                </CountUp>
               </p>
               <p className="text-lg mt-2 text-gray-600 dark:text-gray-300">
                 {label}
