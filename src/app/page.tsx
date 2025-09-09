@@ -8,12 +8,16 @@ import HowItWorks from "@/components/home/how-works";
 import Stats from "@/components/home/stats";
 import Testimonials from "@/components/home/testimonials";
 import WhyChooseUs from "@/components/home/why-choose-us";
+import WelcomeSection from "@/components/home/welcome-section";
 
 export default function Home() {
   return (
     <div className="">
       {/* Hero Slider Section */}
       <HeroSlider />
+      
+      {/* Welcome Section (Image + CTAs) */}
+      <WelcomeSection />
 
       {/* Benefits Section */}
       <WhyChooseUs />
