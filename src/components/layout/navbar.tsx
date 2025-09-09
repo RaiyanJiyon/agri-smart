@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -86,10 +87,8 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="bg-[hsl(var(--green-600))] text-white p-1.5 rounded-lg">
-                <Leaf className="h-5 w-5" />
-              </div>
+            <Link href="/" className="flex items-center gap-1">
+              <Image src="/logo-file.png" alt="AgriSmart Logo" width={50} height={50} />
               <span className="font-bold text-xl text-green-700 dark:text-green-500">
                 AgriSmart
               </span>
