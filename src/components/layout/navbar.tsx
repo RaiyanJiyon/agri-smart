@@ -70,7 +70,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-1">
-              <Image src="/logo-file.png" alt="AgriSmart Logo" width={50} height={50} />
+              <Image src="/logo-file.png" alt="AgriSmart Logo" width={40} height={40} className="mb-1" />
               <span className="font-bold text-xl text-green-700 dark:text-green-500">
                 AgriSmart
               </span>
