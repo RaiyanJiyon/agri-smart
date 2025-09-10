@@ -1,4 +1,4 @@
-export const dynamic = "force-static"
+export const dynamic = "force-static";
 
 import CallToAction from "@/components/home/call-to-action";
 import FAQ from "@/components/home/faq";
@@ -16,7 +16,7 @@ export default function Home() {
     <div className="">
       {/* Hero Slider Section */}
       <HeroSlider />
-      
+
       {/* Welcome Section (Image + CTAs) */}
       <WelcomeSection />
 
@@ -35,8 +35,8 @@ export default function Home() {
       {/* Featured In Section */}
       <Featured />
 
-       {/* Comparison Section */}
-       <FeaturesComparison />
+      {/* Comparison Section */}
+      <FeaturesComparison />
 
       {/* FAQ Section */}
       <FAQ />

@@ -1,5 +1,6 @@
 import LoginForm from "./components/login-form";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LoginPage() {
   return (
@@ -22,6 +23,11 @@ export default function LoginPage() {
           </div>
           {/* 👇 Client Component */}
           <LoginForm />
+          <div className="mt-4 text-center">
+            <Link href="/forgot-password" className="text-sm text-green-700 dark:text-green-400 hover:underline">
+              Forgot password?
+            </Link>
+          </div>
         </div>
       </div>
     </div>
