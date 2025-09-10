@@ -70,7 +70,7 @@ const HowItWorks = () => {
             size="lg"
             className="bg-[hsl(var(--green-600))] hover:bg-[hsl(var(--green-700))]"
           >
-            <Link href="/features">
+            <Link href="/about">
               Learn More About Our Process
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>

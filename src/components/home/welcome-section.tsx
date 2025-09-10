@@ -50,7 +50,7 @@ const WelcomeSection = () => {
 
           {/* CTAs */}
           <div className="grid grid-cols-1 gap-4 max-w-lg">
-            <Link href="/features" aria-label="Explore Features">
+            <Link href="/about" aria-label="Explore Features">
               <Button
                 className="w-full justify-between rounded-lg bg-[hsl(var(--green-600))] text-white hover:bg-[hsl(var(--green-600))]/90 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 py-8"
                 size="lg"
@@ -63,7 +63,7 @@ const WelcomeSection = () => {
               </Button>
             </Link>
 
-            <Link href="/services" aria-label="Get Crop Advice">
+            <Link href="/dashboard/user/crop-recommendation" aria-label="Get Crop Advice">
               <Button
                 className="w-full justify-between rounded-lg bg-[hsl(var(--green-600))] text-white hover:bg-[hsl(var(--green-600))]/90 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 py-8"
                 size="lg"
@@ -76,7 +76,7 @@ const WelcomeSection = () => {
               </Button>
             </Link>
 
-            <Link href="/services" aria-label="Find Local Experts">
+            <Link href="/community" aria-label="Find Local Experts">
               <Button
                 className="w-full justify-between rounded-lg bg-[hsl(var(--green-600))] text-white hover:bg-[hsl(var(--green-600))]/90 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 py-8"
                 size="lg"
@@ -89,7 +89,7 @@ const WelcomeSection = () => {
               </Button>
             </Link>
 
-            <Link href="/chat" aria-label="Chat With Us">
+            <Link href="/dashboard/user/ai-assistant" aria-label="Chat With Us">
               <Button
                 className="w-full justify-between rounded-lg bg-[hsl(var(--green-600))] text-white hover:bg-[hsl(var(--green-600))]/90 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 py-8"
                 size="lg"

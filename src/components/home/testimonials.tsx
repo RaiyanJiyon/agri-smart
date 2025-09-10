@@ -48,7 +48,7 @@ const Testimonials = () => {
       {/* Background image with overlay to match the provided style */}
       <div
         className="absolute inset-0 h-full w-full bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url(/slider-2.jpg)" }}
+        style={{ backgroundImage: "url(/sliders/slider-2.jpg)" }}
         aria-hidden
       />
       <div className="absolute inset-0 h-full w-full bg-[hsl(var(--green-600))] opacity-75" aria-hidden />

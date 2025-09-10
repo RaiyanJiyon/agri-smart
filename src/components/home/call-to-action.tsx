@@ -9,7 +9,7 @@ const CallToAction = () => {
       {/* Background image and overlay to match testimonial styling */}
       <div
         className="absolute inset-0 h-full w-full bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url(/slider-3.jpg)" }}
+        style={{ backgroundImage: "url(/sliders/slider-3.jpg)" }}
         aria-hidden
       />
       <div className="absolute inset-0 h-full w-full bg-[hsl(var(--green-600))] opacity-75" aria-hidden />
@@ -33,7 +33,7 @@ const CallToAction = () => {
               variant="outline"
               className="border-white text-white bg-transparent hover:bg-white hover:text-black"
             >
-              <Link href="/features">Learn More</Link>
+              <Link href="/about">Learn More</Link>
             </Button>
           </div>
           <div className="mt-8 flex items-center justify-center gap-2 text-white/90">
