@@ -12,7 +12,6 @@ import {
   LogOut,
   ChevronDown,
   LayoutDashboard,
-  ShoppingCart,
 } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
@@ -29,7 +28,6 @@ import Image from "next/image";
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Features", href: "/features" },
-  { name: "Marketplace", href: "/marketplace" },
   { name: "Community", href: "/community" },
   { name: "Knowledge Hub", href: "/knowledge-hub" },
   { name: "About", href: "/about" },
@@ -40,7 +38,6 @@ export default function Navbar() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
-  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,20 +46,6 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    const fetchCartCount = async () => {
-      if (!session?.user?.id) return;
-      try {
-        const res = await fetch(`/api/cart/${session.user.id}`);
-        const data = await res.json();
-        setCartCount(data.length || 0);
-      } catch (error) {
-        console.error("Failed to fetch cart count:", error);
-      }
-    };
-    fetchCartCount();
-  }, [session?.user?.id]);
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/login" });
@@ -116,23 +99,6 @@ export default function Navbar() {
             {/* Dark Mode Toggle and Cart Button (Desktop) */}
             <div className="hidden lg:flex items-center gap-2">
               <ModeToggle />
-              {session?.user && (
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="relative flex items-center gap-2"
-                >
-                  <Link href="/my-cart">
-                    <ShoppingCart className="h-4 w-4" />
-                    {cartCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {cartCount}
-                      </span>
-                    )}
-                  </Link>
-                </Button>
-              )}
               {session?.user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -262,21 +228,6 @@ export default function Navbar() {
                       )}
                     </nav>
                     <div className="mt-auto flex flex-col gap-4 py-4">
-                      {session?.user && (
-                        <Link
-                          href="/my-cart"
-                          onClick={() => setIsSheetOpen(false)} // Close the sheet on link click
-                          className="text-lg font-medium transition-colors hover:text-green-700 dark:hover:text-green-500 text-gray-600 dark:text-gray-300 flex items-center gap-2"
-                        >
-                          <ShoppingCart className="h-4 w-4" />
-                          My Cart
-                          {cartCount > 0 && (
-                            <span className="ml-auto bg-green-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                              {cartCount}
-                            </span>
-                          )}
-                        </Link>
-                      )}
                       {session?.user ? (
                         <Button
                           onClick={() => {
