@@ -34,7 +34,7 @@ const About = () => {
             src={"/about.jpg"}
             alt="Farmers using technology in field"
             fill
-            className="object-cover"
+            className="object-fill"
           />
         </div>
       </div>

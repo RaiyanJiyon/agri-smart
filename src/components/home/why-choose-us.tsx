@@ -6,37 +6,37 @@ const WhyChooseUs = () => {
   // Array of benefit data
   const benefits = [
     {
-      icon: <Image src="/leaf.svg" alt="Leaf" width={50} height={50} />,
+      icon: <Image src="svg/leaf.svg" alt="Leaf" width={50} height={50} />,
       title: "AI Crop Planning",
       description:
         "Get personalized crop recommendations based on your soil, climate, and market conditions",
     },
     {
-      icon: <Image src="weather.svg" alt="Cloud" width={50} height={50} />,
+      icon: <Image src="svg/weather.svg" alt="Cloud" width={50} height={50} />,
       title: "Weather Forecasting",
       description:
         "AI-powered weather predictions to plan your farming activities with confidence",
     },
     {
-      icon: <Image src="/water.svg" alt="Droplets" width={50} height={50} />,
+      icon: <Image src="svg/water.svg" alt="Droplets" width={50} height={50} />,
       title: "Smart Irrigation",
       description:
         "Save water and improve crop health with intelligent irrigation recommendations",
     },
     {
-      icon: <Image src="/market.svg" alt="Bar Chart" width={50} height={50} />,
+      icon: <Image src="svg/market.svg" alt="Bar Chart" width={50} height={50} />,
       title: "Market Insights",
       description:
         "Make informed decisions with AI-driven market price predictions and trends",
     },
     {
-      icon: <Image src="/ai.svg" alt="Message Square" width={50} height={50} />,
+      icon: <Image src="svg/ai.svg" alt="Message Square" width={50} height={50} />,
       title: "AI Assistant",
       description:
         "Get instant answers to your farming questions with our specialized chatbot",
     },
     {
-      icon: <Image src="/people.svg" alt="Users" width={50} height={50} />,
+      icon: <Image src="svg/people.svg" alt="Users" width={50} height={50} />,
       title: "Community Support",
       description:
         "Connect with experts and fellow farmers to share knowledge and get help",

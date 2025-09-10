@@ -8,7 +8,7 @@ import Link from "next/link";
 const slides = [
   {
     id: 1,
-    image: "https://i.ibb.co.com/RkRCNL1q/slider-1.jpg",
+    image: "/sliders/slider-1.jpg",
     title: "AI-Powered Farming Solutions",
     subtitle:
       "Make data-driven decisions for better yields and sustainable farming",
@@ -17,7 +17,7 @@ const slides = [
   },
   {
     id: 2,
-    image: "https://i.ibb.co.com/bgTcQzM4/slider-2.jpg",
+    image: "/sliders/slider-2.jpg",
     title: "Detect Plant Diseases Instantly",
     subtitle:
       "Upload photos and get immediate diagnosis with treatment recommendations",
@@ -26,7 +26,7 @@ const slides = [
   },
   {
     id: 3,
-    image: "https://i.ibb.co.com/MkzBV0h5/slider-3.jpg",
+    image: "/sliders/slider-3.jpg",
     title: "Join Our Farming Community",
     subtitle:
       "Connect with experts and fellow farmers to share knowledge and best practices",

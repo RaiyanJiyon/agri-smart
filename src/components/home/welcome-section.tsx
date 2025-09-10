@@ -17,7 +17,7 @@ const WelcomeSection = () => {
         {/* Left: Friendly Farmer Image */}
         <div className="flex justify-center md:justify-start">
           <Image
-            src="/farmer-solo.png"
+            src="/farmers/farmer-solo.png"
             alt="Friendly farmer smiling"
             width={520}
             height={520}

@@ -65,7 +65,7 @@ const OurTeam = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-center text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-center text-gray-600 dark:text-gray-300 pb-6">
                 {member.bio}
               </p>
             </CardContent>
