@@ -69,11 +69,11 @@ const FeaturesComparison = () => {
     <div className="container mx-auto px-4 py-16">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-green-800 dark:text-green-400">
-          Why Choose AgriSmart?
+          Feature Comparison
         </h2>
         <p className="text-xl max-w-3xl mx-auto text-gray-600 dark:text-gray-300">
-          See how our platform compares to traditional farming methods and other
-          solutions
+          Compare AgriSmart with traditional methods and other platforms across
+          key capabilities to see where it stands out.
         </p>
       </div>
 

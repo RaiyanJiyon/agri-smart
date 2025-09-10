@@ -9,6 +9,7 @@ import Stats from "@/components/home/stats";
 import Testimonials from "@/components/home/testimonials";
 import WhyChooseUs from "@/components/home/why-choose-us";
 import WelcomeSection from "@/components/home/welcome-section";
+import FeaturesComparison from "@/components/home/features-comparison";
 
 export default function Home() {
   return (
@@ -33,6 +34,9 @@ export default function Home() {
 
       {/* Featured In Section */}
       <Featured />
+
+       {/* Comparison Section */}
+       <FeaturesComparison />
 
       {/* FAQ Section */}
       <FAQ />
