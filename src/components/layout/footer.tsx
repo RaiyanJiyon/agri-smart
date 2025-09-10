@@ -15,11 +15,30 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
+// Simple link sources to keep render logic clean
+const QUICK_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Marketplace", href: "/marketplace" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Chatbot", href: "/dashboard/user/ai-assistant" },
+  { label: "Community", href: "/community" },
+  { label: "About", href: "/about" },
+] as const;
+
+const RESOURCE_LINKS = [
+  "Blog",
+  "Knowledge Base",
+  "API Documentation",
+  "Tutorials",
+  "Case Studies",
+  "FAQs",
+] as const;
+
 export default function Footer() {
   const pathname = usePathname();
 
   if (pathname.includes('/dashboard')) {
-    return;
+    return null;
   }
 
   return (
@@ -76,20 +95,13 @@ export default function Footer() {
               Quick Links
             </h3>
             <ul className="space-y-2">
-              {[
-                "Home",
-                "Marketplace",
-                "Dashboard",
-                "Chatbot",
-                "Community",
-                "About",
-              ].map((item) => (
-                <li key={item}>
+              {QUICK_LINKS.map((link) => (
+                <li key={link.label}>
                   <Link
-                    href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                    href={link.href}
                     className="text-gray-600 dark:text-gray-300 hover:text-green-700 dark:hover:text-green-500 transition-colors"
                   >
-                    {item}
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -101,14 +113,7 @@ export default function Footer() {
               Resources
             </h3>
             <ul className="space-y-2">
-              {[
-                "Blog",
-                "Knowledge Base",
-                "API Documentation",
-                "Tutorials",
-                "Case Studies",
-                "FAQs",
-              ].map((item) => (
+              {RESOURCE_LINKS.map((item) => (
                 <li key={item}>
                   <Link
                     href="#"
@@ -145,23 +150,23 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            © {new Date().getFullYear()} AgriSmart. All rights reserved.
+            {new Date().getFullYear()} AgriSmart. All rights reserved.
           </p>
           <div className="flex gap-6">
             <Link
-              href="#"
+              href="/privacy-policy"
               className="text-sm text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-green-500"
             >
               Privacy Policy
             </Link>
             <Link
-              href="#"
+              href="/terms"
               className="text-sm text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-green-500"
             >
               Terms of Service
             </Link>
             <Link
-              href="#"
+              href="/cookie-policy"
               className="text-sm text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-green-500"
             >
               Cookie Policy
