@@ -23,20 +23,20 @@ export default function Home() {
       {/* Benefits Section */}
       <WhyChooseUs />
 
-      {/* How It Works Section */}
-      <HowItWorks />
-
-      {/* Stats Section */}
-      <Stats />
+      {/* Featured In Section */}
+      <Featured />
 
       {/* Testimonials Section */}
       <Testimonials />
 
-      {/* Featured In Section */}
-      <Featured />
+      {/* How It Works Section */}
+      <HowItWorks />
 
       {/* Comparison Section */}
       <FeaturesComparison />
+
+      {/* Stats Section */}
+      <Stats />
 
       {/* FAQ Section */}
       <FAQ />
